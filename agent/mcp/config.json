@@ -1,0 +1,8 @@
+{
+  "db": {
+    "transport": "stdio",
+    "command": "python",
+    "args": ["mcp/main.py", "--verbose"],
+    "cwd": "/work"
+  }
+}
