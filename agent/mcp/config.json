@@ -1,8 +1,20 @@
 {
-  "db": {
+  "data_information": {
     "transport": "stdio",
-    "command": "python",
-    "args": ["mcp/main.py", "--verbose"],
+    "command": "uv",
+    "args": ["run", "agent/mcp/servers/data_information.py"],
+    "cwd": "/work"
+  },
+  "function_executor": {
+    "transport": "stdio",
+    "command": "uv",
+    "args": ["run", "agent/mcp/servers/function_executor.py"],
+    "cwd": "/work"
+  },
+  "notebook_writer": {
+    "transport": "stdio",
+    "command": "uv",
+    "args": ["run", "agent/mcp/servers/notebook_writer.py"],
     "cwd": "/work"
   }
 }

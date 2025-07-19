@@ -10,10 +10,11 @@ import pandas as pd
 import seaborn as sns
 import sklearn
 
-TRAIN = pd.read_csv("/work/data/train_timeseries/train_timeseries.csv")
-VALIDATION = pd.read_csv("/work/data/validation_timeseries/validation_timeseries.csv")
-TEST = pd.read_csv("/work/data/test_timeseries/test_timeseries.csv")
-SOIL_DATA = pd.read_csv("/work/data/soil_data.csv")
+INITIALIZED = False
+TRAIN = None
+VALIDATION = None
+TEST = None
+SOIL_DATA = None
 
 
 def execute_timeseries_analysis(func_string: str, data_type: Literal["train", "validation", "test"]) -> str:
@@ -45,6 +46,9 @@ def execute_timeseries_analysis(func_string: str, data_type: Literal["train", "v
         - 成功した場合: 関数の返り値である成果物のpath。
         - 失敗した場合: エラーのトレースバック情報（文字列）。
     """
+    if not INITIALIZED:
+        _load_data()
+
     if data_type == "train":
         df = TRAIN
     elif data_type == "validation":
@@ -85,6 +89,8 @@ def execute_soil_analysis(func_string: str) -> str:
         - 成功した場合: 関数の返り値である成果物のpath。
         - 失敗した場合: エラーのトレースバック情報（文字列）。
     """
+    if not INITIALIZED:
+        _load_data()
 
     return _execute_function(func_string, SOIL_DATA)
 
@@ -118,6 +124,9 @@ def execute_all_data_analysis(func_string: str) -> str:
         - 成功した場合: 関数の返り値である成果物のpath。
         - 失敗した場合: エラーのトレースバック情報（文字列）。
     """
+    if not INITIALIZED:
+        _load_data()
+
     return _execute_function(func_string, TRAIN, VALIDATION, TEST, SOIL_DATA)
 
 
@@ -168,3 +177,16 @@ def _execute_function(func_string: str, *data) -> str:
 
     except Exception:
         return traceback.format_exc()
+
+
+def _load_data() -> None:
+    global TRAIN, VALIDATION, TEST, SOIL_DATA
+
+    if TRAIN is None:
+        TRAIN = pd.read_csv("/work/data/train_timeseries/train_timeseries.csv")
+    if VALIDATION is None:
+        VALIDATION = pd.read_csv("/work/data/validation_timeseries/validation_timeseries.csv")
+    if TEST is None:
+        TEST = pd.read_csv("/work/data/test_timeseries/test_timeseries.csv")
+    if SOIL_DATA is None:
+        SOIL_DATA = pd.read_csv("/work/data/soil_data.csv")

@@ -7,7 +7,7 @@ from agent.mcp.components.data_information.tools import (
     list_available_data,
 )
 
-mcp = FastMCP("Data Information Server")
+mcp = FastMCP("data_information")
 
 mcp.tool(get_data_description)
 mcp.tool(get_join_keys_info)

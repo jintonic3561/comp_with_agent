@@ -16,3 +16,7 @@ WORKDIR /work
 COPY pyproject.toml /work/
 COPY uv.lock /work/
 RUN uv sync
+
+RUN uv run fastmcp install claude-code /work/agent/mcp/servers/data_information.py
+RUN uv run fastmcp install claude-code /work/agent/mcp/servers/function_executor.py
+RUN uv run fastmcp install claude-code /work/agent/mcp/servers/notebook_writer.py

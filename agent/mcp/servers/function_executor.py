@@ -6,7 +6,7 @@ from agent.mcp.components.function_executor.tools import (
     execute_timeseries_analysis,
 )
 
-mcp = FastMCP("Function Executor Server")
+mcp = FastMCP("function_executor")
 
 mcp.tool(execute_all_data_analysis)
 mcp.tool(execute_soil_analysis)
