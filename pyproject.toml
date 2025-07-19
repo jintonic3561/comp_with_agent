@@ -1,3 +1,21 @@
+[project]
+name = "comp-with-agent"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=2.10.5",
+    "lightgbm>=4.6.0",
+    "matplotlib>=3.10.3",
+    "numpy==2.3.1",
+    "pandas==2.3.1",
+    "polars>=1.31.0",
+    "pretty-errors>=1.2.25",
+    "scikit-learn==1.7.1",
+    "seaborn>=0.13.2",
+]
+
 [tool.ruff]
 ignore = ["E731"]
 line-length = 120

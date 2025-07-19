@@ -1,15 +1,20 @@
 {
-  "name": "comp-genai-lt",
-  "image": "gcr.io/kaggle-images/python:latest",
-  "runArgs": ["--init"],
+  "name": "comp-with-agent",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "workspaceFolder": "/work",
   "workspaceMount": "source=${localWorkspaceFolder},target=/work,type=bind,consistency=cached",
   "mounts": [],
-  "postCreateCommand": "/bin/bash /work/.devcontainer/postCreateCommand.sh",
   "containerEnv": {
     "TZ": "Asia/Tokyo",
     "PYTHONPATH": "${containerEnv:PYTHONPATH}:/work"
   },
+  "forwardPorts": [
+    3030, // Slidevのメインポート
+    5173 // Vite HMR用のポート
+  ],
   "customizations": {
     "vscode": {
       "settings": {
@@ -19,8 +24,8 @@
         "[python]": {
           "editor.formatOnSave": true,
           "editor.codeActionsOnSave": {
-            "source.fixAll": true,
-            "source.organizeImports": true
+            "source.fixAll": "always",
+            "source.organizeImports": "always"
           }
         },
         "python.testing.pytestArgs": ["tests", "--capture=tee-sys", "-vv"],
@@ -32,7 +37,7 @@
           "editor.defaultFormatter": "esbenp.prettier-vscode",
           "editor.formatOnSave": true,
           "editor.codeActionsOnSave": {
-            "source.fixAll": true
+            "source.fixAll": "always"
           }
         }
       },
