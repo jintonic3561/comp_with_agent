@@ -171,26 +171,27 @@ def get_problem_formulation() -> str:
     """
     return """
     # 問題設計
-    ## About Dataset
-    Update (14/12/21): Kaggle Tasks are being deprecated, so I moved the current results on this dataset here:
+    
+    ## データセットについて
+    更新 (21/12/14): Kaggle Tasksは非推奨になったため、このデータセットの現在の結果はこちらに移動しました:
 
-    | User | Model/Notebook | Macro F1 Mean | MAE Mean |
+    | ユーザー | モデル/ノートブック | Macro F1平均 | MAE平均 |
     |------|----------------|---------------|----------|
     | @cdminix | LSTM Baseline | 0.639 | 0.277 |
     | @epistoteles | Ridge Regression (default features) | 0.579 | 0.255 |
     | @epistoteles | Ridge Regression (MiniROCKET features) | 0.444 | 0.372 |
 
     ```
-    On NaN values: The drought scores are available weekly while the meteorological data points are available daily. To make using previous drought scores for prediction easier (e.g. by interpolating), I merged them into one file and set the drought scores to NaN were not available.
+    NaN値について: 干ばつスコアは週次で利用可能ですが、気象データポイントは日次で利用可能です。予測のために過去の干ばつスコアを使いやすくするため（例えば補間によって）、これらを1つのファイルにマージし、利用できない干ばつスコアをNaNに設定しました。
     ```
 
-    ### Context
-    The US drought monitor is a measure of drought across the US manually created by experts using a wide range of data.
-    This datasets' aim is to help investigate if droughts could be predicted using only meteorological data, potentially leading to generalization of US predictions to other areas of the world.
+    ### 背景
+    米国の干ばつモニターは、専門家が広範なデータを用いて手動で作成した、米国全土の干ばつの指標です。
+    このデータセットの目的は、気象データのみを用いて干ばつを予測できるかどうかを調査し、米国の予測を世界の他の地域に一般化できる可能性を探ることにあります。
 
-    ### Content
-    This is a classification dataset over six levels of drought, which is no drought (None in the dataset), and five drought levels shown below.
-    Each entry is a drought level at a specific point in time in a specific US county, accompanied by the last 90 days of 18 meteorological indicators shown in the bottom of this description.
+    ### 内容
+    これは6つの干ばつレベルにわたる分類データセットで、干ばつなし（データセットではNone）と、以下に示す5つの干ばつレベルで構成されています。
+    各エントリは、特定の米国の郡における特定の時点での干ばつレベルであり、この説明の最後に示されている18の気象指標の過去90日間のデータが付随しています。
 
     D0 (Abnormally Dry)
     D1 (Moderate Drought)
@@ -200,53 +201,54 @@ def get_problem_formulation() -> str:
 
     ![drought level](/work/assets/inbox_2055480_f5ad8544ab11d043972fb9209a874dd3_levels.png)
 
-    To avoid data leakage, the data has been split into the following subsets.
+    データ漏洩を避けるため、データは以下のサブセットに分割されています。
 
-    | Split | Year Range (inclusive) | Percentage (approximate) |
+    | 分割 | 年範囲（両端を含む） | 割合（概算） |
     |-------|------------------------|--------------------------|
-    | Train | 2000-2009 | 47% |
-    | Validation | 2010-2011 | 10% |
-    | Test | 2012-2020 | 43% |
+    | 訓練 | 2000-2009 | 47% |
+    | 検証 | 2010-2011 | 10% |
+    | テスト | 2012-2020 | 43% |
 
-    ### Dataset Imbalance
-    The dataset is imbalanced, as can be seen in the following graph.
+    ### データセットの不均衡
+    以下のグラフで示されるように、データセットは不均衡です。
 
     ![dataset imbalance](/work/assets/inbox_2055480_9b1753b67845d5e6fe81156350db5191_imbalance.png)
 
-    ### Acknowledgements
-    This dataset would not exist without the open data offered by the NASA POWER Project and the authors of the US Drought Monitor.
+    ### 謝辞
+    このデータセットは、NASA POWERプロジェクトおよび米国干ばつモニターの作成者によって提供されたオープンデータなしには存在しませんでした。
 
-    These data were obtained from the NASA Langley Research Center (LaRC) POWER Project funded through the NASA Earth Science/Applied Science Program.
-    The U.S. Drought Monitor is produced through a partnership between the National Drought Mitigation Center at the University of Nebraska-Lincoln, the United States Department of Agriculture, and the National Oceanic and Atmospheric Administration.
-    This dataset utilizes the Harmonized World Soil Database by Fischer, G., F. Nachtergaele, S. Prieler, H.T. van Velthuizen, L. Verelst, D. Wiberg, 2008. Global Agro-ecological Zones Assessment for Agriculture (GAEZ 2008). IIASA, Laxenburg, Austria and FAO, Rome, Italy.
+    これらのデータは、NASA地球科学/応用科学プログラムを通じて資金提供されたNASAラングレー研究センター（LaRC）POWERプロジェクトから入手しました。
+    米国干ばつモニターは、ネブラスカ大学リンカーン校の国立干ばつ緩和センター、米国農務省、および米国海洋大気庁のパートナーシップを通じて作成されています。
+    このデータセットは、Fischer, G., F. Nachtergaele, S. Prieler, H.T. van Velthuizen, L. Verelst, D. Wiberg, 2008. Global Agro-ecological Zones Assessment for Agriculture (GAEZ 2008). IIASA, Laxenburg, Austria and FAO, Rome, Italy.によるHarmonized World Soil Databaseを利用しています。
 
-    ### Meteorological Indicators
-    Indicator	Description
-    WS10M_MIN	Minimum Wind Speed at 10 Meters (m/s)
-    QV2M	Specific Humidity at 2 Meters (g/kg)
-    T2M_RANGE	Temperature Range at 2 Meters (C)
-    WS10M	Wind Speed at 10 Meters (m/s)
-    T2M	Temperature at 2 Meters (C)
-    WS50M_MIN	Minimum Wind Speed at 50 Meters (m/s)
-    T2M_MAX	Maximum Temperature at 2 Meters (C)
-    WS50M	Wind Speed at 50 Meters (m/s)
-    TS	Earth Skin Temperature (C)
-    WS50M_RANGE	Wind Speed Range at 50 Meters (m/s)
-    WS50M_MAX	Maximum Wind Speed at 50 Meters (m/s)
-    WS10M_MAX	Maximum Wind Speed at 10 Meters (m/s)
-    WS10M_RANGE	Wind Speed Range at 10 Meters (m/s)
-    PS	Surface Pressure (kPa)
-    T2MDEW	Dew/Frost Point at 2 Meters (C)
-    T2M_MIN	Minimum Temperature at 2 Meters (C)
-    T2MWET	Wet Bulb Temperature at 2 Meters (C)
-    PRECTOT	Precipitation (mm day-1)
+    ### 気象指標
+    | 指標 | 説明 |
+    |---|---|
+    | WS10M_MIN | 地上10メートルでの最小風速 (m/s) |
+    | QV2M | 地上2メートルでの比湿 (g/kg) |
+    | T2M_RANGE | 地上2メートルでの気温範囲 (C) |
+    | WS10M | 地上10メートルでの風速 (m/s) |
+    | T2M | 地上2メートルでの気温 (C) |
+    | WS50M_MIN | 地上50メートルでの最小風速 (m/s) |
+    | T2M_MAX | 地上2メートルでの最高気温 (C) |
+    | WS50M | 地上50メートルでの風速 (m/s) |
+    | TS | 地表面温度 (C) |
+    | WS50M_RANGE | 地上50メートルでの風速範囲 (m/s) |
+    | WS50M_MAX | 地上50メートルでの最大風速 (m/s) |
+    | WS10M_MAX | 地上10メートルでの最大風速 (m/s) |
+    | WS10M_RANGE | 地上10メートルでの風速範囲 (m/s) |
+    | PS | 地表面気圧 (kPa) |
+    | T2MDEW | 地上2メートルでの露点/霜点 (C) |
+    | T2M_MIN | 地上2メートルでの最低気温 (C) |
+    | T2MWET | 地上2メートルでの湿球温度 (C) |
+    | PRECTOT | 降水量 (mm/日) |
 
-    ### Previous Updates
-    Update (23/07/21): The prediction task is now finalised. The starter and baseline notebooks have been updated. We now use a 180-day window of past data for predictions, and include previous drought values, static data, and meteorological data from the year prior. We also now evaluate on 6 future weeks of predictions. While the baseline model is still very simple, it performs much better using this additional input data.
+    ### 過去の更新
+    更新 (21/07/23): 予測タスクが最終決定されました。スターターノートブックとベースラインノートブックが更新されました。予測には過去180日間のデータを使用し、過去の干ばつ値、静的データ、前年の気象データを含めます。また、将来6週間の予測で評価します。ベースラインモデルは依然として非常にシンプルですが、この追加の入力データを使用することでパフォーマンスが大幅に向上します。
 
-    Update (03/03/21): the new version adds features from the harmonized world soil database.
+    更新 (21/03/03): 新バージョンでは、Harmonized World Soil Databaseからの特徴が追加されました。
 
-    ### Data
+    ### データ一覧
     - train_timeseries/train_timeseries.csv
     - validation_timeseries/validation_timeseries.csv
     - test_timeseries/test_timeseries.csv
