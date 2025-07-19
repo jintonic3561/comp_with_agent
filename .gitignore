@@ -4,3 +4,10 @@
 data
 artifacts
 .pytest_cache
+
+slidev/node_modules
+slidev/dist
+slidev/*.local
+slidev/.vite-inspect
+slidev/.remote-assets
+slidev/components.d.ts
