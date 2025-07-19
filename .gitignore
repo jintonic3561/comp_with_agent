@@ -2,4 +2,5 @@
 .temp
 .cred
 data
-artifact
+artifacts
+.pytest_cache
