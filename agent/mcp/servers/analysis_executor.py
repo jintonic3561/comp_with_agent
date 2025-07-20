@@ -1,12 +1,12 @@
 from fastmcp import FastMCP
 
-from agent.mcp.components.function_executor.tools import (
+from agent.mcp.components.analysis_executor.tools import (
     execute_all_data_analysis,
     execute_soil_analysis,
     execute_timeseries_analysis,
 )
 
-mcp = FastMCP("function_executor")
+mcp = FastMCP("analysis_executor")
 
 mcp.tool(execute_all_data_analysis)
 mcp.tool(execute_soil_analysis)

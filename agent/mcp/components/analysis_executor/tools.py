@@ -2,7 +2,7 @@ import ast
 import math
 import os
 import traceback
-from typing import Literal
+from typing import List, Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,17 +15,18 @@ TRAIN = None
 VALIDATION = None
 TEST = None
 SOIL_DATA = None
+os.environ["ARTIFACT_DIR"] = "/work/artifacts"
 
 
-def execute_timeseries_analysis(func_string: str, data_type: Literal["train", "validation", "test"]) -> str:
+def execute_timeseries_analysis(func_string: str, data_type: Literal["train", "validation", "test"]) -> str | List[str]:
     """
     与えられた単一の時系列データを分析するためのPython関数定義を文字列として受け取り、その実行結果またはエラーを返す。
     関数定義は以下の要件を満たすように実装する：
         - 関数名は任意
         - 引数として `df: pd.DataFrame` のみを取ること
         - dfには `{data_type}_timeseries.csv` の内容が格納される
-        - 分析結果をcsvまたはpng形式で関数内で保存すること
-        - 返り値は保存した分析結果のpathとすること
+        - csvまたはpng形式の分析結果を関数内で `os.environ["ARTIFACT_DIR"]` 内に保存すること
+        - 関数の返り値は保存した分析結果のpath、またはそのリストとすること
         - 以下のライブラリはimport済みとしてよい
             - pandas as pd
             - numpy as np
@@ -43,7 +44,7 @@ def execute_timeseries_analysis(func_string: str, data_type: Literal["train", "v
         data_type (Literal["train", "validation", "test"]): 使用するデータのタイプ。'train', 'validation', 'test' のいずれかを指定。
 
     Returns:
-        - 成功した場合: 関数の返り値である成果物のpath。
+        - 成功した場合: 関数の返り値である成果物のpathまたはそのリスト。
         - 失敗した場合: エラーのトレースバック情報（文字列）。
     """
     if not INITIALIZED:
@@ -61,7 +62,7 @@ def execute_timeseries_analysis(func_string: str, data_type: Literal["train", "v
     return _execute_function(func_string, df)
 
 
-def execute_soil_analysis(func_string: str) -> str:
+def execute_soil_analysis(func_string: str) -> str | List[str]:
     """
     与えられた土壌データを分析するためのPython関数定義を文字列として受け取り、その実行結果またはエラーを返す。
     関数定義は以下の要件を満たすように実装する：
@@ -69,7 +70,8 @@ def execute_soil_analysis(func_string: str) -> str:
         - 引数として `df: pd.DataFrame` のみを取ること
         - dfには `soil_data.csv` の内容が格納される
         - 分析結果をcsvまたはpng形式で関数内で保存すること
-        - 返り値は保存した分析結果のpathとすること
+        - csvまたはpng形式の分析結果を関数内で `os.environ["ARTIFACT_DIR"]` 内に保存すること
+        - 関数の返り値は保存した分析結果のpath、またはそのリストとすること
         - 以下のライブラリはimport済みとしてよい
             - pandas as pd
             - numpy as np
@@ -86,7 +88,7 @@ def execute_soil_analysis(func_string: str) -> str:
         func_string (str): 実行したいPythonの関数定義文字列。
 
     Returns:
-        - 成功した場合: 関数の返り値である成果物のpath。
+        - 成功した場合: 関数の返り値である成果物のpathまたはそのリスト。
         - 失敗した場合: エラーのトレースバック情報（文字列）。
     """
     if not INITIALIZED:
@@ -95,7 +97,7 @@ def execute_soil_analysis(func_string: str) -> str:
     return _execute_function(func_string, SOIL_DATA)
 
 
-def execute_all_data_analysis(func_string: str) -> str:
+def execute_all_data_analysis(func_string: str) -> str | List[str]:
     """
     与えられた任意のデータを分析するためのPython関数定義を文字列として受け取り、その実行結果またはエラーを返す。
     関数定義は以下の要件を満たすように実装する：
@@ -104,7 +106,8 @@ def execute_all_data_analysis(func_string: str) -> str:
         - それぞれの引数には `{data_type}_timeseries.csv` もしくは `soil_data.csv` の内容が格納される
         - すべてのデータを利用する必要はなく、必要なデータのみを選んで使用してよい
         - 分析結果をcsvまたはpng形式で関数内で保存すること
-        - 返り値は保存した分析結果のpathとすること
+        - csvまたはpng形式の分析結果を関数内で `os.environ["ARTIFACT_DIR"]` 内に保存すること
+        - 関数の返り値は保存した分析結果のpath、またはそのリストとすること
         - 以下のライブラリはimport済みとしてよい
             - pandas as pd
             - numpy as np
@@ -121,7 +124,7 @@ def execute_all_data_analysis(func_string: str) -> str:
         func_string (str): 実行したいPythonの関数定義文字列。
 
     Returns:
-        - 成功した場合: 関数の返り値である成果物のpath。
+        - 成功した場合: 関数の返り値である成果物のpathまたはそのリスト。
         - 失敗した場合: エラーのトレースバック情報（文字列）。
     """
     if not INITIALIZED:
@@ -130,7 +133,7 @@ def execute_all_data_analysis(func_string: str) -> str:
     return _execute_function(func_string, TRAIN, VALIDATION, TEST, SOIL_DATA)
 
 
-def _execute_function(func_string: str, *data) -> str:
+def _execute_function(func_string: str, *data) -> str | List[str]:
     try:
         # 1. 文字列からAST（抽象構文木）を生成し、関数名を取得
         tree = ast.parse(func_string)
@@ -156,7 +159,7 @@ def _execute_function(func_string: str, *data) -> str:
         local_scope = {}
 
         # 3. 文字列のコードを実行して、スコープ内に関数を定義
-        exec(func_string, globals=global_scope, locals=local_scope)
+        exec(func_string, global_scope, local_scope)
 
         # 4. 定義された関数オブジェクトを取得
         analysis_func = local_scope[func_name]
@@ -164,14 +167,15 @@ def _execute_function(func_string: str, *data) -> str:
         # 5. 関数を実行し、結果を取得
         try:
             result = analysis_func(*data)
-            if not isinstance(result, str):
-                return f"Error: The function must return a string path to the saved result. Got {type(result).__name__} instead."
-            else:
-                # 6. 結果のパスが存在するか確認
-                if not os.path.exists(result):
-                    return f"Error: The specified result path '{result}' does not exist."
-                else:
-                    return result
+
+            paths = result if isinstance(result, list) else [result]
+            for path in paths:
+                if not isinstance(path, str):
+                    return f"Error: The function must return a string path or list of string paths. Got {type(path).__name__} instead."
+                if not os.path.exists(path):
+                    return f"Error: The specified result path '{path}' does not exist."
+
+            return result
         except Exception:
             return traceback.format_exc()
 
@@ -179,14 +183,28 @@ def _execute_function(func_string: str, *data) -> str:
         return traceback.format_exc()
 
 
+def _load_with_cache(path_without_extension: str) -> pd.DataFrame:
+    parquet_path = f"{path_without_extension}.parquet"
+    csv_path = f"{path_without_extension}.csv"
+
+    if os.path.exists(parquet_path):
+        return pd.read_parquet(parquet_path)
+    elif os.path.exists(csv_path):
+        df = pd.read_csv(csv_path)
+        df.to_parquet(parquet_path, index=False)
+        return df
+    else:
+        raise FileNotFoundError(f"Neither {parquet_path} nor {csv_path} exists")
+
+
 def _load_data() -> None:
     global TRAIN, VALIDATION, TEST, SOIL_DATA
 
     if TRAIN is None:
-        TRAIN = pd.read_csv("/work/data/train_timeseries/train_timeseries.csv")
+        TRAIN = _load_with_cache("/work/data/train_timeseries/train_timeseries")
     if VALIDATION is None:
-        VALIDATION = pd.read_csv("/work/data/validation_timeseries/validation_timeseries.csv")
+        VALIDATION = _load_with_cache("/work/data/validation_timeseries/validation_timeseries")
     if TEST is None:
-        TEST = pd.read_csv("/work/data/test_timeseries/test_timeseries.csv")
+        TEST = _load_with_cache("/work/data/test_timeseries/test_timeseries")
     if SOIL_DATA is None:
-        SOIL_DATA = pd.read_csv("/work/data/soil_data.csv")
+        SOIL_DATA = _load_with_cache("/work/data/soil_data")

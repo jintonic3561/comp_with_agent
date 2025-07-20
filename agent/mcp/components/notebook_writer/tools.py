@@ -10,7 +10,7 @@ def add_cell_to_notebook(file_name: str, cell_type: Literal["markdown", "code"],
     Jupyter Notebookファイルにセルを追加します。
 
     引数:
-        file_name (str): ノートブックファイルのパス。新しいファイルでもOK。
+        file_name (str): ノートブックファイルのファイル名。新しいファイルでもOK。
         cell_type (Literal["markdown", "code"]): 追加するセルの種類。
         contents (str): セルに追加する内容。
 
@@ -18,9 +18,12 @@ def add_cell_to_notebook(file_name: str, cell_type: Literal["markdown", "code"],
         なし
     """
     # Check if the file exists
-    if os.path.exists(file_name):
+    artifact_dir = "/work/artifacts"
+    os.makedirs(artifact_dir, exist_ok=True)
+    path = os.path.join(artifact_dir, file_name)
+    if os.path.exists(path):
         # Load existing notebook
-        with open(file_name, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             nb = nbformat.read(f, as_version=4)
     else:
         # Create a new notebook
@@ -36,5 +39,5 @@ def add_cell_to_notebook(file_name: str, cell_type: Literal["markdown", "code"],
     nb.cells.append(cell)
 
     # Write the notebook to file
-    with open(file_name, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8") as f:
         nbformat.write(nb, f)
