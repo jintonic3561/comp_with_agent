@@ -9,19 +9,20 @@
   "mounts": [],
   "containerEnv": {
     "TZ": "Asia/Tokyo",
-    "PYTHONPATH": "${containerEnv:PYTHONPATH}:/work"
+    "PYTHONPATH": "${containerEnv:PYTHONPATH}:/work",
+    "ARTIFACT_DIR": "/work/artifacts"
   },
   "forwardPorts": [
     3030, // Slidevのメインポート
     5173 // Vite HMR用のポート
   ],
+  "postCreateCommand": "/bin/bash /work/.devcontainer/postCreateCommand.sh",
   "customizations": {
     "vscode": {
       "settings": {
         "editor.renderWhitespace": "all",
-        "python.defaultInterpreterPath": "/usr/bin/python3",
-        "python.formatting.provider": "black",
         "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
           "editor.formatOnSave": true,
           "editor.codeActionsOnSave": {
             "source.fixAll": "always",
