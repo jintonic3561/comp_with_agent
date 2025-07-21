@@ -13,6 +13,8 @@ from agent.mcp.components.analysis_executor.tools import (
     execute_all_data_analysis,
     execute_soil_analysis,
     execute_timeseries_analysis,
+    get_data_sample,
+    get_data_summary,
 )
 
 
@@ -353,3 +355,252 @@ class TestLoadData:
 
         # Should only load the three that were None
         assert mock_load.call_count == 3
+
+
+class TestGetDataSample:
+    def test_get_data_sample_train_timeseries(self):
+        mock_data = pd.DataFrame({
+            'fips': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'date': pd.date_range('2000-01-01', periods=10),
+            'PRECTOT': [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.0],
+            'score': [0, 1, 2, 3, 4, 5, 0, 1, 2, 3]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.TRAIN", mock_data):
+                    result = get_data_sample("train_timeseries")
+                    
+                    # Check that CSV string is returned
+                    assert isinstance(result, str)
+                    
+                    # Parse the CSV to check content
+                    import io
+                    result_df = pd.read_csv(io.StringIO(result))
+                    
+                    # Should have 10 rows (head 5 + tail 5)
+                    assert len(result_df) == 10
+                    
+                    # Check that we have the right columns
+                    assert 'fips' in result_df.columns
+                    assert 'PRECTOT' in result_df.columns
+                    
+                    # Check that values are from head and tail
+                    assert result_df.iloc[0]['fips'] == 1  # First row from head
+                    assert result_df.iloc[9]['fips'] == 10  # Last row from tail
+
+    def test_get_data_sample_soil_data(self):
+        mock_soil = pd.DataFrame({
+            'fips': [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+            'lat': [40.1, 40.2, 40.3, 40.4, 40.5, 40.6, 40.7, 40.8, 40.9, 41.0],
+            'lon': [-120.1, -120.2, -120.3, -120.4, -120.5, -120.6, -120.7, -120.8, -120.9, -121.0],
+            'elevation': [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.SOIL_DATA", mock_soil):
+                    result = get_data_sample("soil_data")
+                    
+                    # Check that CSV string is returned
+                    assert isinstance(result, str)
+                    
+                    # Parse the CSV to check content
+                    import io
+                    result_df = pd.read_csv(io.StringIO(result))
+                    
+                    # Should have 10 rows (head 5 + tail 5)
+                    assert len(result_df) == 10
+                    
+                    # Check that we have the right columns
+                    assert 'fips' in result_df.columns
+                    assert 'lat' in result_df.columns
+                    assert 'elevation' in result_df.columns
+
+    def test_get_data_sample_invalid_data_type(self):
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", True):
+            with pytest.raises(ValueError) as exc_info:
+                get_data_sample("invalid_type")
+            
+            assert "Invalid data type: invalid_type" in str(exc_info.value)
+            assert "'train_timeseries', 'validation_timeseries', 'test_timeseries', or 'soil_data'" in str(exc_info.value)
+
+    def test_get_data_sample_small_dataset(self):
+        # Test with dataset smaller than 10 rows
+        mock_data = pd.DataFrame({
+            'fips': [1, 2, 3],
+            'score': [0, 1, 2]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.TRAIN", mock_data):
+                    result = get_data_sample("train_timeseries")
+                    
+                    import io
+                    result_df = pd.read_csv(io.StringIO(result))
+                    
+                    # Should have 6 rows for small dataset (head 3 + tail 3)
+                    assert len(result_df) == 6
+
+    def test_get_data_sample_validation_timeseries(self):
+        mock_data = pd.DataFrame({
+            'fips': [11, 12, 13],
+            'PRECTOT': [2.1, 2.2, 2.3],
+            'score': [1, 2, 1]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.VALIDATION", mock_data):
+                    result = get_data_sample("validation_timeseries")
+                    
+                    assert isinstance(result, str)
+                    import io
+                    result_df = pd.read_csv(io.StringIO(result))
+                    assert len(result_df) == 6  # head 3 + tail 3
+
+    def test_get_data_sample_test_timeseries(self):
+        mock_data = pd.DataFrame({
+            'fips': [21, 22, 23, 24],
+            'PRECTOT': [3.1, 3.2, 3.3, 3.4],
+            'score': [2, 3, 2, 1]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.TEST", mock_data):
+                    result = get_data_sample("test_timeseries")
+                    
+                    assert isinstance(result, str)
+                    import io
+                    result_df = pd.read_csv(io.StringIO(result))
+                    assert len(result_df) == 8  # head 4 + tail 4
+
+
+class TestGetDataSummary:
+    def test_get_data_summary_train_timeseries(self):
+        mock_data = pd.DataFrame({
+            'fips': [1, 2, 3, 4, 5],
+            'PRECTOT': [1.1, 2.2, 3.3, 4.4, 5.5],
+            'PS': [100.1, 100.2, 100.3, 100.4, 100.5],
+            'score': [0, 1, 2, 3, 4]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.TRAIN", mock_data):
+                    result = get_data_summary("train_timeseries")
+                    
+                    # Check that result is a dict
+                    assert isinstance(result, dict)
+                    
+                    # Check required keys
+                    assert "row_count" in result
+                    assert "column_count" in result
+                    assert "describe_csv" in result
+                    
+                    # Check values
+                    assert result["row_count"] == 5
+                    assert result["column_count"] == 4
+                    
+                    # Check that describe_csv is valid CSV
+                    assert isinstance(result["describe_csv"], str)
+                    import io
+                    describe_df = pd.read_csv(io.StringIO(result["describe_csv"]), index_col=0)
+                    
+                    # describe() should have statistics like count, mean, std, etc.
+                    assert 'count' in describe_df.index
+                    assert 'mean' in describe_df.index
+
+    def test_get_data_summary_soil_data(self):
+        mock_soil = pd.DataFrame({
+            'fips': [100, 200, 300],
+            'lat': [40.1, 40.2, 40.3],
+            'lon': [-120.1, -120.2, -120.3],
+            'elevation': [100, 200, 300],
+            'slope1': [0.1, 0.2, 0.3]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.SOIL_DATA", mock_soil):
+                    result = get_data_summary("soil_data")
+                    
+                    # Check that result is a dict
+                    assert isinstance(result, dict)
+                    
+                    # Check required keys
+                    assert "row_count" in result
+                    assert "column_count" in result
+                    assert "describe_csv" in result
+                    
+                    # Check values
+                    assert result["row_count"] == 3
+                    assert result["column_count"] == 5
+                    
+                    # Check that describe_csv is valid CSV
+                    assert isinstance(result["describe_csv"], str)
+
+    def test_get_data_summary_invalid_data_type(self):
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", True):
+            with pytest.raises(ValueError) as exc_info:
+                get_data_summary("invalid_type")
+            
+            assert "Invalid data type: invalid_type" in str(exc_info.value)
+            assert "'train_timeseries', 'validation_timeseries', 'test_timeseries', or 'soil_data'" in str(exc_info.value)
+
+    def test_get_data_summary_with_non_numeric_columns(self):
+        # Test with mixed numeric and non-numeric columns
+        mock_data = pd.DataFrame({
+            'fips': [1, 2, 3],
+            'category': ['A', 'B', 'C'],  # Non-numeric column
+            'value': [10.5, 20.5, 30.5]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.TRAIN", mock_data):
+                    result = get_data_summary("train_timeseries")
+                    
+                    assert result["row_count"] == 3
+                    assert result["column_count"] == 3
+                    
+                    # describe() will only include numeric columns by default
+                    import io
+                    describe_df = pd.read_csv(io.StringIO(result["describe_csv"]), index_col=0)
+                    assert 'fips' in describe_df.columns
+                    assert 'value' in describe_df.columns
+                    # 'category' should not be in describe output as it's non-numeric
+
+    def test_get_data_summary_validation_timeseries(self):
+        mock_data = pd.DataFrame({
+            'fips': [11, 12, 13],
+            'PRECTOT': [2.1, 2.2, 2.3],
+            'score': [1, 2, 1]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.VALIDATION", mock_data):
+                    result = get_data_summary("validation_timeseries")
+                    
+                    assert isinstance(result, dict)
+                    assert result["row_count"] == 3
+                    assert result["column_count"] == 3
+
+    def test_get_data_summary_test_timeseries(self):
+        mock_data = pd.DataFrame({
+            'fips': [21, 22, 23, 24],
+            'PRECTOT': [3.1, 3.2, 3.3, 3.4],
+            'score': [2, 3, 2, 1]
+        })
+        
+        with patch("agent.mcp.components.analysis_executor.tools.INITIALIZED", False):
+            with patch("agent.mcp.components.analysis_executor.tools._load_data") as mock_load:
+                with patch("agent.mcp.components.analysis_executor.tools.TEST", mock_data):
+                    result = get_data_summary("test_timeseries")
+                    
+                    assert isinstance(result, dict)
+                    assert result["row_count"] == 4
+                    assert result["column_count"] == 3
