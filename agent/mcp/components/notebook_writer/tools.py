@@ -1,3 +1,4 @@
+import json
 import os
 import textwrap
 from typing import List, Literal
@@ -7,8 +8,11 @@ from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
 
 def add_cell_to_notebook(
-    file_name: str, cell_type: Literal["markdown", "code"], contents: str, artifact_paths: List[str] | None = None
-) -> None:
+    file_name: str,
+    cell_type: Literal["markdown", "code"],
+    contents: str,
+    artifact_paths: List[str] | str | None = None,
+) -> str:
     """
     Jupyter Notebookファイルにセルを追加します。
 
@@ -16,12 +20,12 @@ def add_cell_to_notebook(
         file_name (str): ノートブックファイルのファイル名。新しいファイルでもOK。
         cell_type (Literal["markdown", "code"]): 追加するセルの種類。
         contents (str): セルに追加する内容。
-        artifact_paths (List[str] | None):
+        artifact_paths (List[str] | str | None):
             表示するアーティファクトファイルのpathのリスト。
             分析で何らかのファイル出力を行った場合は、必ずそのすべてのpathを指定する。
 
     戻り値:
-        なし
+        str: ステータスメッセージ。
     """
     # Check if the file exists
     artifact_dir = os.environ.get("ARTIFACT_DIR", "/work/artifacts")
@@ -49,11 +53,21 @@ def add_cell_to_notebook(
     # Add the cell to the notebook
     nb.cells.append(cell)
 
+    result = ""
+
     # Add artifact display cells if artifact_paths is provided
     if artifact_paths:
+        # If artifact_paths is a string, try to parse it as JSON
+        if isinstance(artifact_paths, str):
+            try:
+                artifact_paths = json.loads(artifact_paths)
+            except json.JSONDecodeError:
+                # If not valid JSON, treat as a single path
+                artifact_paths = [artifact_paths]
+
         for artifact_path in artifact_paths:
             if not os.path.exists(artifact_path):
-                print(f"WARNING: The artifact path '{artifact_path}' does not exist. Skipping.")
+                result += f"ERROR: The artifact path '{artifact_path}' does not exist.\n"
                 continue
 
             # Determine file type and create appropriate display code
@@ -109,6 +123,12 @@ def add_cell_to_notebook(
             display_cell = new_code_cell(display_code)
             nb.cells.append(display_cell)
 
-    # Write the notebook to file
-    with open(path, "w", encoding="utf-8") as f:
-        nbformat.write(nb, f)
+    if result:
+        return result
+    else:
+        # Write the notebook to file
+        with open(path, "w", encoding="utf-8") as f:
+            nbformat.write(nb, f)
+
+        result = "success"
+        return result

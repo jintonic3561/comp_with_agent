@@ -34,7 +34,8 @@ class TestAddCellToNotebook:
                 nbformat.write(nb, f)
 
             # Add a markdown cell
-            add_cell_to_notebook(notebook_path, "markdown", "# Test Header")
+            result = add_cell_to_notebook(notebook_path, "markdown", "# Test Header")
+            assert result == "success"
 
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -59,7 +60,8 @@ class TestAddCellToNotebook:
                 nbformat.write(nb, f)
 
             # Add a code cell
-            add_cell_to_notebook(notebook_path, "code", "import pandas as pd\nprint('hello')")
+            result = add_cell_to_notebook(notebook_path, "code", "import pandas as pd\nprint('hello')")
+            assert result == "success"
 
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -80,7 +82,8 @@ class TestAddCellToNotebook:
             assert not os.path.exists(notebook_path)
 
             # Add a markdown cell to new notebook
-            add_cell_to_notebook(notebook_path, "markdown", "## New Notebook")
+            result = add_cell_to_notebook(notebook_path, "markdown", "## New Notebook")
+            assert result == "success"
 
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -99,7 +102,8 @@ class TestAddCellToNotebook:
             assert not os.path.exists(notebook_path)
 
             # Add a code cell to new notebook
-            add_cell_to_notebook(notebook_path, "code", "x = 1\ny = 2\nprint(x + y)")
+            result = add_cell_to_notebook(notebook_path, "code", "x = 1\ny = 2\nprint(x + y)")
+            assert result == "success"
 
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -115,16 +119,20 @@ class TestAddCellToNotebook:
             notebook_path = os.path.join(temp_dir, "multi_cell_notebook.ipynb")
 
             # Add first cell
-            add_cell_to_notebook(notebook_path, "markdown", "# Introduction")
+            result = add_cell_to_notebook(notebook_path, "markdown", "# Introduction")
+            assert result == "success"
 
             # Add second cell
-            add_cell_to_notebook(notebook_path, "code", "import numpy as np")
+            result = add_cell_to_notebook(notebook_path, "code", "import numpy as np")
+            assert result == "success"
 
             # Add third cell
-            add_cell_to_notebook(notebook_path, "markdown", "## Analysis")
+            result = add_cell_to_notebook(notebook_path, "markdown", "## Analysis")
+            assert result == "success"
 
             # Add fourth cell
-            add_cell_to_notebook(notebook_path, "code", "data = np.array([1, 2, 3])\nprint(data)")
+            result = add_cell_to_notebook(notebook_path, "code", "data = np.array([1, 2, 3])\nprint(data)")
+            assert result == "success"
 
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -162,7 +170,8 @@ print("hello")
 ```
 """
 
-            add_cell_to_notebook(notebook_path, "markdown", markdown_content)
+            result = add_cell_to_notebook(notebook_path, "markdown", markdown_content)
+            assert result == "success"
 
             # Test code with special characters
             code_content = """# 日本語のコメント
@@ -174,7 +183,8 @@ import re
 pattern = r'^[a-zA-Z0-9]+$'
 """
 
-            add_cell_to_notebook(notebook_path, "code", code_content)
+            result = add_cell_to_notebook(notebook_path, "code", code_content)
+            assert result == "success"
 
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -192,10 +202,12 @@ pattern = r'^[a-zA-Z0-9]+$'
             notebook_path = os.path.join(temp_dir, "empty_cell_notebook.ipynb")
 
             # Add empty markdown cell
-            add_cell_to_notebook(notebook_path, "markdown", "")
+            result = add_cell_to_notebook(notebook_path, "markdown", "")
+            assert result == "success"
 
             # Add empty code cell
-            add_cell_to_notebook(notebook_path, "code", "")
+            result = add_cell_to_notebook(notebook_path, "code", "")
+            assert result == "success"
 
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -218,7 +230,8 @@ pattern = r'^[a-zA-Z0-9]+$'
             notebook_path = os.path.join(temp_dir, "version_test.ipynb")
 
             # Add cell to new notebook
-            add_cell_to_notebook(notebook_path, "code", "print('version test')")
+            result = add_cell_to_notebook(notebook_path, "code", "print('version test')")
+            assert result == "success"
 
             # Read the raw JSON to check version
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -234,8 +247,10 @@ pattern = r'^[a-zA-Z0-9]+$'
             notebook_path = os.path.join(temp_dir, "metadata_test.ipynb")
 
             # Add cells
-            add_cell_to_notebook(notebook_path, "markdown", "# Test")
-            add_cell_to_notebook(notebook_path, "code", "x = 1")
+            result = add_cell_to_notebook(notebook_path, "markdown", "# Test")
+            assert result == "success"
+            result = add_cell_to_notebook(notebook_path, "code", "x = 1")
+            assert result == "success"
 
             # Read and verify metadata structure
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -262,12 +277,13 @@ pattern = r'^[a-zA-Z0-9]+$'
                 f.write("dummy image content")
             
             # Add cell with image artifact
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "markdown",
                 "# Analysis with Image",
                 artifact_paths=[image_path]
             )
+            assert result == "success"
             
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -295,12 +311,13 @@ pattern = r'^[a-zA-Z0-9]+$'
                 f.write("col1,col2,col3\n1,2,3\n4,5,6\n")
             
             # Add cell with CSV artifact
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "code",
                 "# Load and analyze data",
                 artifact_paths=[csv_path]
             )
+            assert result == "success"
             
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -336,12 +353,13 @@ pattern = r'^[a-zA-Z0-9]+$'
                 f.write("some notes")
             
             # Add cell with multiple artifacts
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "markdown",
                 "## Results Summary",
                 artifact_paths=[image_path, csv_path, txt_path]
             )
+            assert result == "success"
             
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -378,26 +396,18 @@ pattern = r'^[a-zA-Z0-9]+$'
             nonexistent_path = os.path.join(temp_dir, "does_not_exist.png")
             
             # Add cell with mixed existing/non-existing artifacts
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "code",
                 "# Analysis",
                 artifact_paths=[nonexistent_path, existing_csv]
             )
+            # Should return error message for non-existent file
+            assert "ERROR" in result
+            assert "does not exist" in result
             
-            # Read and verify
-            with open(notebook_path, "r", encoding="utf-8") as f:
-                result_nb = nbformat.read(f, as_version=4)
-            
-            # Should only have 2 cells: main cell + existing CSV
-            assert len(result_nb.cells) == 2
-            assert result_nb.cells[0].cell_type == "code"
-            assert result_nb.cells[0].source == "# Analysis"
-            
-            # Only the existing CSV should have a display cell
-            assert result_nb.cells[1].cell_type == "code"
-            assert "pandas" in result_nb.cells[1].source
-            assert existing_csv in result_nb.cells[1].source
+            # When error occurs, notebook file should not be created
+            assert not os.path.exists(notebook_path)
     
     def test_add_cell_with_empty_artifact_list(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -405,12 +415,13 @@ pattern = r'^[a-zA-Z0-9]+$'
             notebook_path = os.path.join(temp_dir, "empty_artifacts_notebook.ipynb")
             
             # Add cell with empty artifact list
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "markdown",
                 "# No artifacts",
                 artifact_paths=[]
             )
+            assert result == "success"
             
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -436,12 +447,13 @@ pattern = r'^[a-zA-Z0-9]+$'
                     f.write("dummy")
             
             # Add cell with various image formats
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "code",
                 "# Image Gallery",
                 artifact_paths=[png_path, jpg_path, jpeg_path]
             )
+            assert result == "success"
             
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -466,12 +478,13 @@ pattern = r'^[a-zA-Z0-9]+$'
                 f.write("This is a sample text file.\nIt has multiple lines.\n日本語も含まれています。")
             
             # Add cell with text artifact
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "markdown",
                 "# Text File Display Test",
                 artifact_paths=[txt_path]
             )
+            assert result == "success"
             
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -502,12 +515,13 @@ pattern = r'^[a-zA-Z0-9]+$'
                 f.write('print("hello")')
             
             # Add cell with unsupported artifacts
-            add_cell_to_notebook(
+            result = add_cell_to_notebook(
                 notebook_path,
                 "code",
                 "# Test unsupported extensions",
                 artifact_paths=[json_path, py_path]
             )
+            assert result == "success"
             
             # Read and verify
             with open(notebook_path, "r", encoding="utf-8") as f:
@@ -526,3 +540,125 @@ pattern = r'^[a-zA-Z0-9]+$'
             assert "Unsupported artifact type: script.py" in result_nb.cells[2].source
             assert "WARNING" in result_nb.cells[2].source
             assert ".py" in result_nb.cells[2].source
+
+    def test_add_cell_with_string_artifact_path_single(self):
+        """Test artifact_paths as single string path"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            os.environ["ARTIFACT_DIR"] = temp_dir
+            notebook_path = os.path.join(temp_dir, "string_artifact_notebook.ipynb")
+            
+            # Create a CSV file
+            csv_path = os.path.join(temp_dir, "data.csv")
+            with open(csv_path, "w") as f:
+                f.write("x,y\n1,2\n3,4\n")
+            
+            # Pass artifact_paths as single string (not list)
+            result = add_cell_to_notebook(
+                notebook_path,
+                "code",
+                "# Analysis with string path",
+                artifact_paths=csv_path  # String instead of list
+            )
+            assert result == "success"
+            
+            # Read and verify
+            with open(notebook_path, "r", encoding="utf-8") as f:
+                result_nb = nbformat.read(f, as_version=4)
+            
+            assert len(result_nb.cells) == 2
+            assert result_nb.cells[0].cell_type == "code"
+            assert result_nb.cells[0].source == "# Analysis with string path"
+            
+            # Check CSV display cell
+            assert result_nb.cells[1].cell_type == "code"
+            assert "pandas as pd" in result_nb.cells[1].source
+            assert csv_path in result_nb.cells[1].source
+
+    def test_add_cell_with_json_string_artifact_paths(self):
+        """Test artifact_paths as JSON string"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            os.environ["ARTIFACT_DIR"] = temp_dir
+            notebook_path = os.path.join(temp_dir, "json_string_artifact_notebook.ipynb")
+            
+            # Create multiple files
+            csv_path = os.path.join(temp_dir, "data.csv")
+            txt_path = os.path.join(temp_dir, "notes.txt")
+            
+            with open(csv_path, "w") as f:
+                f.write("a,b\n1,2\n")
+            with open(txt_path, "w") as f:
+                f.write("Some notes")
+            
+            # Pass artifact_paths as JSON string
+            import json
+            paths_json = json.dumps([csv_path, txt_path])
+            
+            result = add_cell_to_notebook(
+                notebook_path,
+                "markdown",
+                "# Analysis with JSON paths",
+                artifact_paths=paths_json  # JSON string
+            )
+            assert result == "success"
+            
+            # Read and verify
+            with open(notebook_path, "r", encoding="utf-8") as f:
+                result_nb = nbformat.read(f, as_version=4)
+            
+            assert len(result_nb.cells) == 3  # main + csv + txt
+            assert result_nb.cells[0].cell_type == "markdown"
+            assert result_nb.cells[0].source == "# Analysis with JSON paths"
+            
+            # Check CSV display cell
+            assert result_nb.cells[1].cell_type == "code"
+            assert "pandas as pd" in result_nb.cells[1].source
+            
+            # Check text display cell
+            assert result_nb.cells[2].cell_type == "code"
+            assert "Display text file: notes.txt" in result_nb.cells[2].source
+
+    def test_add_cell_with_invalid_json_string_artifact_paths(self):
+        """Test artifact_paths as invalid JSON string (fallback to single path)"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            os.environ["ARTIFACT_DIR"] = temp_dir
+            notebook_path = os.path.join(temp_dir, "invalid_json_artifact_notebook.ipynb")
+            
+            # Create a file
+            csv_path = os.path.join(temp_dir, "data.csv")
+            with open(csv_path, "w") as f:
+                f.write("x,y\n1,2\n")
+            
+            # Pass artifact_paths as invalid JSON string (should be treated as single path)
+            invalid_json = "[invalid json"
+            
+            result = add_cell_to_notebook(
+                notebook_path,
+                "code",
+                "# Analysis with invalid JSON",
+                artifact_paths=invalid_json  # Invalid JSON string
+            )
+            
+            # Should return error because the invalid JSON string is treated as a path
+            assert "ERROR" in result
+            assert "does not exist" in result
+
+    def test_add_cell_with_nonexistent_string_artifact_path(self):
+        """Test artifact_paths as string path that doesn't exist"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            os.environ["ARTIFACT_DIR"] = temp_dir
+            notebook_path = os.path.join(temp_dir, "nonexistent_string_artifact_notebook.ipynb")
+            
+            nonexistent_path = os.path.join(temp_dir, "does_not_exist.csv")
+            
+            # Pass non-existent path as string
+            result = add_cell_to_notebook(
+                notebook_path,
+                "code",
+                "# Analysis with non-existent path",
+                artifact_paths=nonexistent_path
+            )
+            
+            # Should return error message
+            assert "ERROR" in result
+            assert "does not exist" in result
+            assert nonexistent_path in result
