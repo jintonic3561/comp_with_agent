@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "data_information": {
+      "command": "uv",
+      "args": ["run", "/work/agent/mcp/servers/data_information.py"],
+      "cwd": "/work",
+      "trust": true
+    },
+    "analysis_executor": {
+      "command": "uv",
+      "args": ["run", "/work/agent/mcp/servers/analysis_executor.py"],
+      "cwd": "/work",
+      "trust": true
+    },
+    "notebook_writer": {
+      "command": "uv",
+      "args": ["run", "/work/agent/mcp/servers/notebook_writer.py"],
+      "cwd": "/work",
+      "trust": true
+    }
+  },
+  "preferredEditor": "vscode"
+}

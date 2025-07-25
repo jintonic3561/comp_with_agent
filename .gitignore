@@ -1,6 +1,7 @@
 **/__pycache__/
 .temp
 .cred
+.env
 data
 artifacts
 .pytest_cache
