@@ -46,7 +46,6 @@ slides:
         - "✅ バグの**原因特定**"
         - "✅ ベースラインの**構築**"
       image: "/work/assets/chat_with_llm.png"
-    notes: "LLMができることをリストアップし、その有用性を肯定的に示します。"
 
   - title: "だが…あと一歩届かない！"
     type: content
@@ -56,8 +55,7 @@ slides:
 
   - title: "2. データ分析における「思考の壁」"
     type: section_header
-    notes: "なぜLLMがデータを触るのは難しいのか？"
-
+    
   - title: "仮説・アイディアを考えるプロセス"
     type: content
     content:
