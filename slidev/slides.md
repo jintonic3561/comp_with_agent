@@ -53,6 +53,13 @@ layoutClass: gap-16
   </figure>
 </div>
 
+---
+layout: image-right
+image: https://tonic-slidev.s3.ap-northeast-1.amazonaws.com/comp_with_agent/yakushima.JPG
+---
+
+# aaa
+
 
 ---
 src: ./pages/agenda.md
