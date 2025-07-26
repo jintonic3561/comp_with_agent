@@ -5,6 +5,7 @@ fonts:
   sans: 'Noto Sans JP'
   serif: 'Noto Serif JP'
   mono: 'Fira Code'
+aspectRatio: 16/9
 background: https://cover.sli.dev
 title: 妙だな...をLLMに気付かせる
 info: |
@@ -26,9 +27,32 @@ mdc: true
   <span>2025/07/27</span>
 </div>
 
+
 ---
-src: ./pages/self-introduction.md
+layout: two-cols
+layoutClass: gap-16
 ---
+
+# 自己紹介
+<div class="flex flex-col items-center justify-center">
+  <img src="/work/assets/kaggle_icon.png" class="w-1/2 mb-3">
+  <div class="text-left">
+    <h2 class="text-2xl mb-1">tonic (<a href="https://x.com/tonic3561" target="_blank" class="text-blue-500 hover:text-blue-700">@tonic3561</a>)</h2>
+    <p class="text-lg leading-tight">所属: 合同会社AlgoSphere 代表</p>
+    <p class="text-lg leading-tight">Kaggle: 万年Expert侍(5x🥈)</p>
+    <p class="text-lg leading-tight">専門: 時系列予測</p>
+  </div>
+</div>
+
+::right::
+
+<div class="flex items-center justify-center h-full">
+  <figure class="flex flex-col items-center">
+    <img src="/work/assets/yakushima.JPG" class="w-11/14 mb-3">
+    <figcaption class="text text-gray-600">↑登山ハマってます。これは屋久島</figcaption>
+  </figure>
+</div>
+
 
 ---
 src: ./pages/agenda.md
