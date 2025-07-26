@@ -113,3 +113,7 @@
         "/work/slidev/draft/draft.yaml",
     ]
 }
+
+# slidev翻訳
+slidevを使ってプレゼンスライドを作ります。 @slidev/slides.md がスライド本体です。各ページは @slidev/pages 配下にそれぞれ作成してください。原稿は @slidev/draft/draft.yaml です。スライドサンプルは @document/slidev/sample/slides.md , @document/slidev/sample/pages/imported-slides.md にあるので、まずこれを通読してください。slidevの仕様は @document/slidev 配下にあるので、必要に応じて参照してください。原稿の内容を忠実に反映するように作成してください。レイアウトなどについては、より分かりやすくするために修正を加えても構いません。画像は、必ずアスペクト比を保って使用してください。
+スライドを一枚作成するたびに、必ず @slidev/draft/draft.yaml を再度読み込んで、今作るべきスライドの内容を深く確認してください。
