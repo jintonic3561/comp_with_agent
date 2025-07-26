@@ -1,0 +1,285 @@
+slides:
+  - title: "妙だな...をLLMに気付かせる"
+    subtitle: "MCPサーバで始めるデータと対話できるAIの作り方"
+    type: title
+    content:
+      author: "tonic"
+      affiliation: "合同会社AlgoSphere"
+      event: "データ分析コンペ x コード生成AI 勉強会"
+      date: "2025/07/27"
+
+  - title: "自己紹介"
+    type: content
+    content:
+      images:
+        - "/work/assets/kaggle_icon.png"
+        - "/work/assets/kaggle_profile.png"
+        - "/work/assets/fwi_silver.png"
+      bullets:
+        - "所属: 合同会社AlgoSphere 代表"
+        - "名前: tonic"
+        - "Kaggle: 万年Expert侍(5x🥈)"
+        - "専門: 時系列予測"
+
+  - title: "もくじ"
+    type: agenda
+    content:
+      bullets:
+        - "1. コンペx生成AIの現在地"
+        - "2. データ分析における「思考の壁」"
+        - "3. LLMにデータを「触らせる」挑戦"
+        - "4. デモ: LLMによる自律的データ探索"
+        - "5. まとめと展望"
+
+  - title: "1. コンペx生成AIの現在地"
+    type: section_header
+
+  - title: "LLMは既に優秀なアシスタント"
+    type: content
+    content:
+      text: "データ分析コンペにおいて、LLMは様々な場面で利用可能"
+      bullets:
+        - "✅ 問題設定やデータの**説明**"
+        - "✅ 仮説・アイディアの**壁打ち**"
+        - "✅ 関連論文の**調査**"
+        - "✅ アイディアの**実装**"
+        - "✅ バグの**原因特定**"
+        - "✅ ベースラインの**構築**"
+      image: "/work/assets/chat_with_llm.png"
+    notes: "LLMができることをリストアップし、その有用性を肯定的に示します。"
+
+  - title: "だが…あと一歩届かない！"
+    type: content
+    content:
+      text: "✅ 仮説・アイディアの**壁打ち** ← ココ"
+      main_point: "仮説を立てるためにはデータをよく見るのが一番大切（？）だが、チャットベースのLLMでは「データを触る」ことが難しい"
+
+  - title: "2. データ分析における「思考の壁」"
+    type: section_header
+    notes: "なぜLLMがデータを触るのは難しいのか？"
+
+  - title: "仮説・アイディアを考えるプロセス"
+    type: content
+    content:
+      columns:
+        - title: "(1) EDA型"
+          diagram: "生データを見る → 加工・集約 → 「妙だな…」 → 深掘り → 繰り返し"
+          highlight: "生データを見る"
+          caption: "ここがむずい"
+        - title: "(2) 仮説駆動型"
+          diagram: "仮説を立てる → 分析・可視化 → 結果を眺める → 繰り返し"
+          highlight: "結果を眺める"
+          caption: "ここがむずい"
+    notes: "2つの思考プロセスを並べて表示。mermaidを使い、視覚的に訴える。LLMにとってのボトルネック部分（データを見ること）を矢印等で強調。"
+
+  - title: "チャットLLMとの対話における「3つの壁」"
+    type: content
+    content:
+      columns:
+        - title: "(1) コンテキストの壁"
+          bullets:
+            - "巨大なデータはそのそも読み込んでもらえない"
+          image: "/work/assets/huge_data.png"
+        - title: "(2) 作業の壁"
+          bullets:
+            - "LLMが生成したコードを、人間がコピペして実行"
+            - "実行結果のファイル（CSVや画像）を、人間が確認"
+            - "その結果やファイルを、人間がLLMに再入力"
+          image: "/work/assets/manual_work.png"
+        - title: "(3) 思考の壁"
+          bullets:
+            - "分析の「気づき」は、データを多角的に**眺める**中で生まれる"
+            - "LLMは人間が与えた断片的な結果しか見ることができない？"
+          image: "/work/assets/interrupted_thought.png"
+
+  - title: "3. LLMにデータを「触らせる」挑戦"
+    type: section_header
+
+  - title: "LLMにデータを触ってもらうには？"
+    type: content
+    content:
+      text: "LLMが自律的に分析を進めるために必要なタスクを分解してみる"
+      bullets:
+        - "問題設計・データ構造を理解する → ✅ **できる**"
+        - "集約・可視化コードを書く → ✅ **できる**"
+        - "結果をファイル出力する → ✅ **できる**"
+        - "ファイル (csv, png) を読み込む → ✅ **できる**"
+        - "読み込んだテキストや画像を解釈する → ✅ **できる**"
+        - "上記を繰り返す → ✅ **できる**"
+      conclusion: "個別のタスクは実現可能。\nあれれ～？"
+
+  - title: "作ってみました"
+    type: content
+    content:
+      text: "claude codeとMCPサーバを活用して、自律的にEDAを行うエージェントを作りました"
+      bullets:
+        - "**題材:** [干ばつ予測データセット](https://www.kaggle.com/datasets/cdminix/us-drought-meteorological-data) データセット"
+        - "**リポジトリ:** [Gitリポジトリ](https://github.com/jintonic3561/comp_with_agent)"
+
+  - title: "題材紹介: U.S. Drought Prediction"
+    type: content
+    content:
+      text: "気象・土壌データから、専門家が作成する「干ばつマップ」の自動化を目指す予測タスクです。"
+      columns:
+        - title: "入力データ"
+          bullets:
+            - "**時系列データ (気象):**"
+            - "  - 日々の気温、降水量、風速など"
+            - "  - 期間で訓練/検証/テストに分割"
+            - "**静的データ (地理・土壌):**"
+            - "  - 郡ごとの標高、傾斜、土地の種類など"
+            - "両データは **fips** (郡ID) で結合"
+
+        - title: "予測タスク"
+          bullets:
+            - "**目的変数 (`score`):**"
+            - "  - 干ばつの深刻度を表す **0〜5** の6段階カテゴリ。"
+            - "**評価指標:**"
+            - "  - **Macro F1 Score** (分類精度)"
+            - "  - **MAE** (回帰誤差)"
+      image: "/work/assets/drought.png"
+
+  - title: "MCPサーバとは？"
+    type: content
+    content:
+      text: "ざっくり: 電卓みたいなもんです"
+      bullets:
+        - "LLM（と人間）は暗算が苦手"
+        - "→ 人間と同じように、LLMにも電卓を渡してあげればいいんじゃない？"
+        - "→ ほかにもいろんなツールを渡してあげよう！"
+      image: "/work/assets/llm_with_tools.png"
+
+  - title: "システム構成"
+    type: content
+    content:
+      columns:
+        - title: "AIエージェント"
+          image: "/work/assets/claude_logo.webp"
+          text: "メインのAIエージェント"
+        - title: "ツール（MCPサーバ）"
+          table_markdown: |
+            | カテゴリ | ツール名 (関数名) | 役割・説明 |
+            |:---|:---|:---|
+            | **データ情報取得**<br>(Data Information) | `list_available_data` | 利用可能なデータファイルの一覧を取得 |
+            | | `get_data_description` | 各データの概要、スキーマ、列定義をmdで取得 |
+            | | `get_join_keys_info` | データの結合キーに関する情報をmdで取得 |
+            | | `get_problem_formulation` | コンペの問題設計（背景、目的、評価指標など）をmdで取得 |
+            | **分析実行**<br>(Analysis Executor) | `get_data_sample` | データのheadとtailを取得 |
+            | | `get_data_summary` | データの統計要約情報を取得 |
+            | | `execute_timeseries_analysis` | **メインデータ**に対し、渡された関数を実行して結果を返す |
+            | | `execute_soil_analysis` | **土壌データ**に対し、渡された関数を実行して結果を返す |
+            | | `execute_all_data_analysis` | **全データ**に対し、渡された関数を実行して結果を返す |
+            | **レポート作成**<br>(Notebook Writer) | `add_cell_to_notebook` | Jupyter Notebookにコードや考察を記録 |
+    note: "エージェントとツールテーブルの間に両矢印を引く"
+
+  - title: "ツール① `Data Information`"
+    type: content
+    content:
+      text: "問題設計、データの列定義等に立ち返るためのツール"
+      code_snippet: |
+        def get_data_description(
+            data_type: Literal["timeseries", "soil_data"]
+        ) -> str:
+            if data_type == "timeseries":
+                return """
+                # データ概要
+                ...
+                # 列の説明
+                | 列名 | データ型 | 説明 |
+                |:---|:---|:---|
+                | fips | int | 米国郡のFIPSコード |
+                ...
+                """
+            ...
+      highlights: [2, 4, 5-13, 14]
+
+  - title: "ツール② `Analysis Executor`"
+    type: content
+    content:
+      text: "LLMが生成した関数を実行し、結果を返すためのツール"
+      code_snippets:
+        - code: |
+            def execute_timeseries_analysis(
+                func_string: str, 
+                data_type: Literal["train", "validation", "test"]
+            ) -> List[str]:
+                """
+                ...
+                """
+                
+                # 実行する関数に渡すデータを読み込む
+                df = load_data(data_type)
+
+                # LLMが生成した関数を実行
+                return _execute_function(func_string, df)
+          highlights: [2-3, 9-10, 12-13]
+        - code: |
+            def execute_timeseries_analysis(
+                func_string: str, 
+                data_type: Literal["train", "validation", "test"]
+            ) -> List[str]:
+                """
+                関数定義は以下の要件を満たすように実装すること：
+                  - 引数として `df: pd.DataFrame` のみを取ること
+                  - dfには `{data_type}_timeseries.csv` の内容が格納される
+                  - csvまたはpng形式の分析結果を関数内でファイル保存すること
+                  - 関数の返り値は保存した分析結果のpath、またはそのリストとすること
+                このツールを呼び出した後は、分析結果を必ず読み込んで考察を行うこと
+                """
+                ...
+          highlights: [5-12, 6, 7, 8, 9, 10, 4, 11]
+
+  - title: "ツール③ `Notebook Writer`"
+    type: content
+    content:
+      text: "分析のコードや結果をJupyter Notebookに逐次記録するツール"
+      code_snippet: |
+        def add_cell_to_notebook(
+            content: str,
+            cell_type: Literal["code", "markdown"],
+            artifact_paths: List[str]
+        ):
+            # セルを追加する
+            cell = create_cell(content, cell_type)
+            nb.cells.append(cell)
+
+            # 出力ファイルを表示する
+            for path in artifact_paths:
+                # テキストを表示
+                if path.endswith(".csv"):
+                    display_csv(path)
+                # 画像を表示
+                elif path.endswith(".png"):
+                    display_image(path)
+      highlights: [2, 3, 4,  6-8, 10-11, 12-14, 15-17]
+
+  - title: "4. デモ: LLMによる自律的データ探索"
+    type: section_header
+
+  - title: "動かしてみる"
+    type: content
+    content:
+      text: "実際にclaude codeが頑張った様子を見てみる"
+    notes: "画面共有にするので詳細は省略"
+
+  - title: "5. まとめと展望"
+    type: section_header
+
+  - title: "まとめ"
+    type: summary
+    content:
+      text: "LLMがデータを「触りながら」自律的に分析できるようになった（？）"
+      bullets:
+        - "「データを眺めながら考える」という思考プロセスを（少しは）模倣できるようになった"
+        - ツール（MCPサーバ）を整備してあげれば、それなりに自律的に動いてくれる
+          - "問題設計・データ情報を確認するツール"
+          - "関数を実行して出力を保存するツール"
+          - "結果を記録するツール"
+        - "ツールを適宜修正すれば、画像・自然言語などにも応用できそう？"
+
+  - title: "Enjoy Kaggle & atmaCup!"
+    type: final
+    content:
+      contact:
+        - "X (Twitter): @tonic3561"
+        - "GitHub: https://github.com/jintonic3561"
