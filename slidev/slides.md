@@ -29,118 +29,21 @@ mdc: true
 
 
 ---
-layout: two-cols
-layoutClass: gap-16
+layout: image-right
+image: https://tonic-slidev.s3.ap-northeast-1.amazonaws.com/comp_with_agent/yakushima.JPG
+paddingLeft: 4rem
 ---
 
 # 自己紹介
-<div class="flex flex-col items-center justify-center">
+
+<div>
   <img src="/work/assets/kaggle_icon.png" class="w-1/2 mb-3">
-  <div class="text-left">
-    <h2 class="text-2xl mb-1">tonic (<a href="https://x.com/tonic3561" target="_blank" class="text-blue-500 hover:text-blue-700">@tonic3561</a>)</h2>
-    <p class="text-lg leading-tight">所属: 合同会社AlgoSphere 代表</p>
-    <p class="text-lg leading-tight">Kaggle: 万年Expert侍(5x🥈)</p>
-    <p class="text-lg leading-tight">専門: 時系列予測</p>
-  </div>
 </div>
 
-::right::
+## tonic [(@tonic3561)](https://x.com/tonic3561)
 
-<div class="flex items-center justify-center h-full">
-  <figure class="flex flex-col items-center">
-    <img src="/work/assets/yakushima.JPG" class="w-11/14 mb-3">
-    <figcaption class="text text-gray-600">↑登山ハマってます。これは屋久島</figcaption>
-  </figure>
-</div>
+<br>
 
----
-layout: image-right
-image: https://tonic-slidev.s3.ap-northeast-1.amazonaws.com/comp_with_agent/yakushima.JPG
----
-
-# aaa
-
-
----
-src: ./pages/agenda.md
----
-
----
-src: ./pages/section-1.md
----
-
----
-src: ./pages/llm-assistant.md
----
-
----
-src: ./pages/one-step-missing.md
----
-
----
-src: ./pages/section-2.md
----
-
----
-src: ./pages/hypothesis-process.md
----
-
----
-src: ./pages/three-walls.md
----
-
----
-src: ./pages/section-3.md
----
-
----
-src: ./pages/touch-data.md
----
-
----
-src: ./pages/made-it.md
----
-
----
-src: ./pages/drought-prediction.md
----
-
----
-src: ./pages/mcp-server.md
----
-
----
-src: ./pages/system-architecture.md
----
-
----
-src: ./pages/tool-1.md
----
-
----
-src: ./pages/tool-2.md
----
-
----
-src: ./pages/tool-3.md
----
-
----
-src: ./pages/section-4.md
----
-
----
-src: ./pages/demo.md
----
-
----
-src: ./pages/section-5.md
----
-
----
-src: ./pages/summary.md
----
-
----
-src: ./pages/final.md
----
+- 所属: 合同会社AlgoSphere 代表
+- Kaggle: 万年Expert (5x🥈)
+- 専門: 時系列予測
