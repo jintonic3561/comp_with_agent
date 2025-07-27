@@ -29,9 +29,9 @@ mdc: true
 
 
 ---
+<!-- MARK: - 自己紹介 -->
 layout: image-right
 image: https://tonic-slidev.s3.ap-northeast-1.amazonaws.com/comp_with_agent/yakushima.JPG
-paddingLeft: 4rem
 ---
 
 # 自己紹介
@@ -40,31 +40,37 @@ paddingLeft: 4rem
   <img src="/work/assets/kaggle_icon.png" class="w-1/2 mb-3">
 </div>
 
-## tonic [(@tonic3561)](https://x.com/tonic3561)
+## tonic[（@tonic3561）](https://x.com/tonic3561)
 
 <br>
 
-- 所属: 合同会社AlgoSphere 代表
-- Kaggle: 万年Expert (5x🥈)
-- 専門: 時系列予測
+- 所属： 合同会社AlgoSphere 代表
+- Kaggle： 万年Expert（5x🥈）
+- 専門： 時系列予測
 
 
 ---
+<!-- MARK: - もくじ -->
 layout: default
 ---
 
 # もくじ
 
 <br>
-
-1. コンペx生成AIの現在地
-2. LLMが直面するデータ分析の壁
-3. LLMにデータを「触らせる」挑戦
-4. デモ: LLMによる自律的データ探索
-5. まとめと展望
+<div v-click>1. コンペ x 生成AIの現在地</div>
+<br>
+<div v-click>2. LLMが直面するデータ分析の壁</div>
+<br>
+<div v-click>3. LLMにデータを「触らせる」挑戦</div>
+<br>
+<div v-click>4. デモ： エージェントによる自律的データ探索</div>
+<br>
+<div v-click>5. まとめと展望</div>
+<br>
 
 
 ---
+<!-- MARK: - 1. コンペ x 生成AIの現在地 -->
 layout: section
 ---
 
@@ -72,29 +78,61 @@ layout: section
 
 
 ---
+<!-- MARK: - LLMは既に優秀なアシスタント -->
 layout: default
-transition: none
 ---
 
 # LLMは既に優秀なアシスタント
 
-データ分析コンペにおいて、LLMは様々な場面で利用可能
+データ分析コンペにおいて、LLMは様々な場面で活躍
 
+<div class="grid grid-cols-2 gap-8 mt-8">
+
+<div>
+
+<div v-click>
 
 ✅ 問題設定やデータの**説明**
 
+</div>
+<div v-click>
+
 ✅ 仮説・アイディアの**壁打ち**
+
+</div>
+
+<div v-click>
 
 ✅ 関連論文の**調査**
 
+</div>
+<div v-click>
+
 ✅ アイディアの**実装**
+
+</div>
+<div v-click>
 
 ✅ バグの**原因特定**
 
+</div>
+<div v-click>
+
 ✅ **ベースライン**の構築
+
+</div>
+
+</div>
+
+<div class="flex items-center justify-center">
+<img src="/work/assets/chat_with_llm.png" class="w-4/5"/>
+</div>
+
+</div>
 
 
 ---
+<!-- MARK: - だが…あと一歩届かない！ -->
 layout: default
 ---
 
@@ -102,29 +140,37 @@ layout: default
 
 <br>
 
-✅ 仮説・アイディアの**壁打ち** ← ココ
+### ✅ 仮説・アイディアの**壁打ち** ← ココ
 
+<br>
 
-仮説を立てるためには**データをよく見る**のが一番大切（？）だが、  
-チャットベースのLLMではデータを「触る」ことが難しい
+<div v-click>
 
+仮説を立てるためには**データをよく見る**のが一番大切（？）
+
+チャットベースのLLMではデータを「触る」ことが難しく、壁打ちくらいが限界
+
+</div>
 
 ---
+<!-- MARK: - 2. LLMが直面するデータ分析の壁 -->
 layout: section
 ---
 
-# 2. LLMが直面するデータ分析の壁
+# 2. LLMが直面する
+# データ分析の壁
 
 
 ---
+<!-- MARK: - （人間が） 仮説・アイディアを考えるプロセス -->
 layout: two-cols-header
 ---
 
-# (人間が) 仮説・アイディアを考えるプロセス
+# （人間が） 仮説・アイディアを考えるプロセス
 
 ::left::
 
-## (1) EDA型
+## （1） EDA型
 
 <br>
 
@@ -140,7 +186,7 @@ graph TD
 
 ::right::
 
-## (2) 仮説駆動型
+## （2） 仮説駆動型
 
 <br>
 
@@ -157,6 +203,7 @@ graph TD
 
 
 ---
+<!-- MARK: - チャットLLMとの対話における「3つの壁」 -->
 layout: default
 ---
 
@@ -166,7 +213,7 @@ layout: default
 
 <div>
 
-### (1) コンテキストの壁
+### （1） コンテキストの壁
 
 <br>
 
@@ -178,7 +225,7 @@ layout: default
 
 <div>
 
-### (2) 作業の壁
+### （2） 作業の壁
 
 <br>
 
@@ -192,7 +239,7 @@ layout: default
 
 <div>
 
-### (3) 思考の壁
+### （3） 思考の壁
 
 <br>
 
@@ -207,6 +254,7 @@ layout: default
 
 
 ---
+<!-- MARK: - 3. LLMにデータを「触らせる」挑戦 -->
 layout: section
 ---
 
@@ -214,6 +262,7 @@ layout: section
 # 「触らせる」挑戦
 
 ---
+<!-- MARK: - LLMにデータを触ってもらうには？ -->
 layout: default
 ---
 
@@ -226,7 +275,7 @@ LLMが自律的に分析を進めるために必要なタスクを分解して�
 - 問題設計・データ構造を理解する → ✅ **できる**
 - 集約・可視化コードを書く → ✅ **できる**
 - 結果をファイル出力する → ✅ **できる**
-- ファイル (csv, png) を読み込む → ✅ **できる**
+- ファイル （csv, png） を読み込む → ✅ **できる**
 - 読み込んだテキストや画像を解釈する → ✅ **できる**
 - 上記を繰り返す → ✅ **できる**
 
@@ -241,6 +290,7 @@ LLMが自律的に分析を進めるために必要なタスクを分解して�
 </div>
 
 ---
+<!-- MARK: - 作ってみました -->
 layout: default
 ---
 
@@ -254,6 +304,7 @@ claude codeとMCPサーバを活用して、自律的にEDAを行うエージェ
 - **Gitリポジトリ：** [https://github.com/jintonic3561/comp_with_agent](https://github.com/jintonic3561/comp_with_agent)
 
 ---
+<!-- MARK: - 題材紹介： U.S. Drought Prediction -->
 layout: two-cols-header
 ---
 
@@ -265,28 +316,29 @@ layout: two-cols-header
 
 ## 入力データ
 
-**時系列データ (気象):**
+**時系列データ （気象）：**
 - 日々の気温、降水量、風速など
 - 時系列方法に train / valid / test を分割
 
-**静的データ (地理・土壌):**
+**静的データ （地理・土壌）：**
 - 郡ごとの標高、傾斜、土地の種類など
-- **fips** (郡ID) で時系列データに左結合
+- **fips** （郡ID） で時系列データに左結合
 
 ::right::
 
 ## 予測タスク
 
-**目的変数:**
+**目的変数：**
 - 干ばつの深刻度を表す **0〜5** の6段階カテゴリ
 
-**評価指標:**
+**評価指標：**
 - **Macro F1 Score**
 - **MAE**
 
 <img src="/work/assets/drought.png" class="w-full mt-4" />
 
 ---
+<!-- MARK: - MCPサーバとは？ -->
 layout: default
 ---
 
@@ -324,6 +376,7 @@ LLM（と人間）は暗算が苦手
 
 
 ---
+<!-- MARK: - 構築したMCPサーバ一覧 -->
 layout: default
 ---
 
@@ -345,6 +398,7 @@ LLMにデータを触ってもらうために、3つのMCPサーバを作りま�
 
 
 ---
+<!-- MARK: - ツール① DI.get_data_description -->
 layout: default
 ---
 
@@ -374,6 +428,7 @@ def get_data_description(
 
 
 ---
+<!-- MARK: - ツール② AE.execute_timeseries_analysis -->
 layout: default
 ---
 
@@ -403,6 +458,7 @@ def execute_timeseries_analysis(
 ```
 
 ---
+<!-- MARK: - ツール③ NW.add_cell_to_notebook -->
 layout: default
 ---
 
@@ -432,6 +488,7 @@ def add_cell_to_notebook(
 
 
 ---
+<!-- MARK: - 4. デモ： エージェントによる自律的データ探索 -->
 layout: section
 ---
 
@@ -440,6 +497,7 @@ layout: section
 
 
 ---
+<!-- MARK: - 動かしてみる -->
 layout: intro
 ---
 
@@ -449,6 +507,7 @@ layout: intro
 
 
 ---
+<!-- MARK: - 5. まとめと展望 -->
 layout: section
 ---
 
@@ -456,6 +515,7 @@ layout: section
 
 
 ---
+<!-- MARK: - まとめ -->
 layout: default
 ---
 
@@ -472,9 +532,13 @@ LLMがデータを触りながら自律的に分析を行えるようになっ�
   - 結果を記録するツール
 - ツールを適宜修正すれば、画像・自然言語などにも応用できそう？
 - 今回はEDAしかやってないけど、実験サイクルも回せるようにしたい
+- 今のところやっぱりClaude Codeが優秀
+  - Gemini CLIは関数実装で無限時間かかるコードを書きがちで、完遂できないことが多い
+    - → 多分サブエージェントに移譲するようにすれば解決できそう？
 
 
 ---
+<!-- MARK: - Enjoy Kaggle & atmaCup! -->
 layout: center
 class: text-center
 ---
@@ -483,9 +547,9 @@ class: text-center
 
 <br>
 
-**X (Twitter):** [@tonic3561](https://x.com/tonic3561)
+**X （Twitter）：** [@tonic3561](https://x.com/tonic3561)
 
-**GitHub:** [https://github.com/jintonic3561](https://github.com/jintonic3561)
+**GitHub：** [https://github.com/jintonic3561](https://github.com/jintonic3561)
 
 <div class="abs-br m-6 text-sm text-gray-400">
 Thanks for listening!
