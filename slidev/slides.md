@@ -454,7 +454,7 @@ LLMにデータを触ってもらうために、3つのMCPサーバを作りま�
 
 <br>
 
-※ 各MCPサーバの中に、複数の「ツール」が実装されてる
+※ 各MCPサーバの中に、複数の「ツール」が実装されている
 
 
 ---
@@ -496,7 +496,7 @@ layout: default
 
 LLMが生成した関数を実行し、結果を返すためのツール
 
-```python {all|2|3|5-12|6|7|8|9|4,10|11|14-16|18-19|all}
+```python {all|2|3|5-12|6|7|8|9|4,10|11|14-16|17-18|all}
 def execute_timeseries_analysis(
     func_string: str, 
     data_type: Literal["train", "validation", "test"]
@@ -513,7 +513,7 @@ def execute_timeseries_analysis(
     # 実行する関数に渡すデータを読み込む
     df = load_data(data_type)
 
-    # LLMが生成した関数を実行
+    # LLMが生成した関数を実行し、結果を返却
     return _execute_function(func_string, df)
 ```
 
@@ -526,13 +526,14 @@ layout: default
 
 分析のコードや結果をJupyter Notebookに逐次記録するツール
 
-```python {all|2|3|4|6-8|10-11|12-14|15-17|all}
+```python {all|2|3|4|6-9|11-12|13-15|16-18|all}
 def add_cell_to_notebook(
     content: str,
     cell_type: Literal["code", "markdown"],
     artifact_paths: List[str]
 ):
     # セルを追加する
+    nb = load_or_create_notebook()
     cell = create_cell(content, cell_type)
     nb.cells.append(cell)
 
@@ -565,6 +566,10 @@ layout: intro
 
 実際にclaude codeが頑張った様子を見てみましょう
 
+<br>
+
+[出力レポート例](TODO)
+
 
 ---
 <!-- MARK: - 5. まとめと展望 -->
@@ -579,7 +584,7 @@ layout: section
 layout: default
 ---
 
-# まとめ
+# まとめと展望
 
 LLMがデータを触りながら自律的に分析を行えるようになった（？）
 
@@ -594,7 +599,7 @@ LLMがデータを触りながら自律的に分析を行えるようになっ�
 - 今回はEDAしかやってないけど、実験サイクルも回せるようにしたい
 - 今のところやっぱりClaude Codeが優秀
   - Gemini CLIは関数実装で無限時間かかるコードを書きがちで、完遂できないことが多い
-    - → 多分サブエージェントに移譲するようにすれば解決できそう？
+    - → サブエージェントに移譲するようにすれば解決できそう？
 
 
 ---
