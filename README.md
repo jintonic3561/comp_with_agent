@@ -37,7 +37,7 @@ MCPサーバとしてPython関数の実行環境をLLMに提供することで�
 渡される関数の仕様を工夫することで、その出力もエージェントに自律的に利用してもらえるようにします。
 
 
-詳細は[カレーちゃんのAI道場LT資料](https://github.com/jintonic3561/comp_with_agent/blob/main/document/lt_slides.pdf)をご覧ください。
+詳細は[カレーちゃんのAI道場LT資料](https://github.com/jintonic3561/comp_with_agent/blob/main/document/lt_slide.pdf)をご覧ください。
 
 カレーちゃんのAI道場についての詳細は[こちら](https://currypurin-dojo.connpass.com/)です。
 
