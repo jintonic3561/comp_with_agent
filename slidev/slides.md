@@ -311,7 +311,6 @@ LLM（と人間）は暗算が苦手
 </div>
 
 <div>
-
 <br>
 
 - 電卓
@@ -322,3 +321,111 @@ LLM（と人間）は暗算が苦手
 </div>
 
 </div>
+
+
+---
+layout: default
+---
+
+# 構築したMCPサーバ一覧
+
+LLMにデータを触ってもらうために、3つのMCPサーバを作りました
+
+<br>
+
+| **MCPサーバ名** | **役割** | **説明** |
+| --- | --- | --- |
+| Data Information | 設計情報DB | 問題設計や利用可能なデータの説明、列定義などの取得 |
+| Analysis Executor | 分析実行環境 | LLMから渡されたコードを実行し、その結果を返す |
+| Notebook Writer | レポート作成 | 実行したコードと結果、考察をnotebookにまとめる |
+
+<br>
+
+※ 各MCPサーバの中に、複数の「ツール」が実装されてる
+
+
+---
+layout: default
+---
+
+# ツール① DI.get_data_description
+
+データの列定義等の情報に立ち返るためのツール
+
+```python {all|2|3-14|2|15-17|all}
+def get_data_description(
+    data_type: Literal["timeseries", "soil_data"]
+) -> str:
+    if data_type == "timeseries":
+        return """
+        # データ概要
+        このデータは、米国の干ばつ…
+
+        # 列定義
+        | 列名 | データ型 | 説明 |
+        | --- | --- | --- |
+        | fips | int | 米国郡のFIPSコード |
+        ...
+        """
+    elif data_type == "soil_data":
+      ...
+    ...
+```
+
+
+---
+layout: default
+---
+
+# ツール② AE.execute_timeseries_analysis
+
+LLMが生成した関数を実行し、結果を返すためのツール
+
+```python {all|2|3|5-12|6|7|8|9|4,10|11|14-16|18-19|all}
+def execute_timeseries_analysis(
+    func_string: str, 
+    data_type: Literal["train", "validation", "test"]
+) -> List[str]:
+    """
+    関数定義は以下の要件を満たすように実装すること：
+      - 引数として `df: pd.DataFrame` のみを取ること
+      - dfには `{data_type}_timeseries.csv` の内容が格納される
+      - csvまたはpng形式の分析結果を関数内でファイル保存すること
+      - 関数の返り値は保存した分析結果のpath、またはそのリストとすること
+    このツールを呼び出した後は、分析結果を必ず読み込んで考察を行うこと
+    """
+    
+    # 実行する関数に渡すデータを読み込む
+    df = load_data(data_type)
+
+    # LLMが生成した関数を実行
+    return _execute_function(func_string, df)
+```
+
+---
+layout: default
+---
+
+# ツール③ NW.add_cell_to_notebook
+
+分析のコードや結果をJupyter Notebookに逐次記録するツール
+
+```python {all|2|3|4|6-8|10-11|12-14|15-17|all}
+def add_cell_to_notebook(
+    content: str,
+    cell_type: Literal["code", "markdown"],
+    artifact_paths: List[str]
+):
+    # セルを追加する
+    cell = create_cell(content, cell_type)
+    nb.cells.append(cell)
+
+    # 出力ファイルを表示する
+    for path in artifact_paths:
+        # テキストを表示
+        if path.endswith(".csv"):
+            display_csv(path)
+        # 画像を表示
+        elif path.endswith(".png"):
+            display_image(path)
+```

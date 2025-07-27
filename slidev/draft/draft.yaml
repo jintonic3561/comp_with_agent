@@ -163,7 +163,7 @@ slides:
             | レポート作成 | Notebook Writer | 実行したコードと結果、考察をnotebookにまとめるツール |
     note: "エージェントとツールテーブルの間に両矢印を引く"
 
-  - title: "ツール① `Data Information`"
+  - title: "ツール① DI.get_data_description"
     type: content
     content:
       text: "問題設計、データの列定義等に立ち返るためのツール"
@@ -184,43 +184,32 @@ slides:
             ...
       highlights: [2, 4, 5-13, 14]
 
-  - title: "ツール② `Analysis Executor`"
+  - title: "ツール② AE.execute_timeseries_analysis"
     type: content
     content:
       text: "LLMが生成した関数を実行し、結果を返すためのツール"
-      code_snippets:
-        - code: |
-            def execute_timeseries_analysis(
-                func_string: str, 
-                data_type: Literal["train", "validation", "test"]
-            ) -> List[str]:
-                """
-                ...
-                """
-                
-                # 実行する関数に渡すデータを読み込む
-                df = load_data(data_type)
+      code_snippet: |
+        def execute_timeseries_analysis(
+            func_string: str, 
+            data_type: Literal["train", "validation", "test"]
+        ) -> List[str]:
+            """
+            関数定義は以下の要件を満たすように実装すること：
+              - 引数として `df: pd.DataFrame` のみを取ること
+              - dfには `{data_type}_timeseries.csv` の内容が格納される
+              - csvまたはpng形式の分析結果を関数内でファイル保存すること
+              - 関数の返り値は保存した分析結果のpath、またはそのリストとすること
+            このツールを呼び出した後は、分析結果を必ず読み込んで考察を行うこと
+            """
+            
+            # 実行する関数に渡すデータを読み込む
+            df = load_data(data_type)
 
-                # LLMが生成した関数を実行
-                return _execute_function(func_string, df)
-          highlights: [2-3, 9-10, 12-13]
-        - code: |
-            def execute_timeseries_analysis(
-                func_string: str, 
-                data_type: Literal["train", "validation", "test"]
-            ) -> List[str]:
-                """
-                関数定義は以下の要件を満たすように実装すること：
-                  - 引数として `df: pd.DataFrame` のみを取ること
-                  - dfには `{data_type}_timeseries.csv` の内容が格納される
-                  - csvまたはpng形式の分析結果を関数内でファイル保存すること
-                  - 関数の返り値は保存した分析結果のpath、またはそのリストとすること
-                このツールを呼び出した後は、分析結果を必ず読み込んで考察を行うこと
-                """
-                ...
-          highlights: [5-12, 6, 7, 8, 9, 10, 4, 11]
+            # LLMが生成した関数を実行
+            return _execute_function(func_string, df)
+      highlights: [all, 2, 3, 5-12, 6, 7, 8, 9, "4,10", 11, 14-16, 18-19]
 
-  - title: "ツール③ `Notebook Writer`"
+  - title: "ツール③ NW.add_cell_to_notebook"
     type: content
     content:
       text: "分析のコードや結果をJupyter Notebookに逐次記録するツール"
@@ -250,7 +239,7 @@ slides:
   - title: "動かしてみる"
     type: content
     content:
-      text: "実際にclaude codeが頑張った様子を見てみる"
+      text: "実際にclaude codeが頑張った様子を見てみましょう"
     notes: "画面共有にするので詳細は省略"
 
   - title: "5. まとめと展望"
