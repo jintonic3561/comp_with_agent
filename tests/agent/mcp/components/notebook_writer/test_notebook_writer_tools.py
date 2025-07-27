@@ -89,9 +89,14 @@ class TestAddCellToNotebook:
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
 
-            assert len(result_nb.cells) == 1
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == "## New Notebook"
+            assert len(result_nb.cells) == 2
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            # Second cell should be the user's markdown
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == "## New Notebook"
 
     def test_add_cell_to_new_notebook_code(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -109,9 +114,14 @@ class TestAddCellToNotebook:
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
 
-            assert len(result_nb.cells) == 1
+            assert len(result_nb.cells) == 2
+            # First cell should be the default imports
             assert result_nb.cells[0].cell_type == "code"
-            assert result_nb.cells[0].source == "x = 1\ny = 2\nprint(x + y)"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            # Second cell should be the user's code
+            assert result_nb.cells[1].cell_type == "code"
+            assert result_nb.cells[1].source == "x = 1\ny = 2\nprint(x + y)"
 
     def test_add_multiple_cells_to_notebook(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -138,19 +148,24 @@ class TestAddCellToNotebook:
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
 
-            assert len(result_nb.cells) == 4
+            assert len(result_nb.cells) == 5  # +1 for default imports
 
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == "# Introduction"
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
 
-            assert result_nb.cells[1].cell_type == "code"
-            assert result_nb.cells[1].source == "import numpy as np"
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == "# Introduction"
 
-            assert result_nb.cells[2].cell_type == "markdown"
-            assert result_nb.cells[2].source == "## Analysis"
+            assert result_nb.cells[2].cell_type == "code"
+            assert result_nb.cells[2].source == "import numpy as np"
 
-            assert result_nb.cells[3].cell_type == "code"
-            assert result_nb.cells[3].source == "data = np.array([1, 2, 3])\nprint(data)"
+            assert result_nb.cells[3].cell_type == "markdown"
+            assert result_nb.cells[3].source == "## Analysis"
+
+            assert result_nb.cells[4].cell_type == "code"
+            assert result_nb.cells[4].source == "data = np.array([1, 2, 3])\nprint(data)"
 
     def test_add_cell_with_special_characters(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -190,11 +205,16 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
 
-            assert len(result_nb.cells) == 2
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == markdown_content
-            assert result_nb.cells[1].cell_type == "code"
-            assert result_nb.cells[1].source == code_content
+            assert len(result_nb.cells) == 3  # +1 for default imports
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == markdown_content
+            assert result_nb.cells[2].cell_type == "code"
+            assert result_nb.cells[2].source == code_content
 
     def test_add_empty_cell(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -213,11 +233,16 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
 
-            assert len(result_nb.cells) == 2
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == ""
-            assert result_nb.cells[1].cell_type == "code"
+            assert len(result_nb.cells) == 3  # +1 for default imports
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "markdown"
             assert result_nb.cells[1].source == ""
+            assert result_nb.cells[2].cell_type == "code"
+            assert result_nb.cells[2].source == ""
 
     @patch("builtins.open", side_effect=IOError("Permission denied"))
     def test_add_cell_file_permission_error(self, mock_file):
@@ -289,16 +314,21 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 2
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == "# Analysis with Image"
+            assert len(result_nb.cells) == 3  # +1 for default imports
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == "# Analysis with Image"
             
             # Check image display cell
-            assert result_nb.cells[1].cell_type == "code"
-            assert "matplotlib.pyplot" in result_nb.cells[1].source
-            assert "mpimg.imread" in result_nb.cells[1].source
-            assert image_path in result_nb.cells[1].source
-            assert "test_image.png" in result_nb.cells[1].source
+            assert result_nb.cells[2].cell_type == "code"
+            assert "matplotlib.pyplot" in result_nb.cells[2].source
+            assert "mpimg.imread" in result_nb.cells[2].source
+            assert image_path in result_nb.cells[2].source
+            assert "test_image.png" in result_nb.cells[2].source
     
     def test_add_cell_with_csv_artifact(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -323,17 +353,22 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 2
+            assert len(result_nb.cells) == 3  # +1 for default imports
+            # First cell should be the default imports
             assert result_nb.cells[0].cell_type == "code"
-            assert result_nb.cells[0].source == "# Load and analyze data"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "code"
+            assert result_nb.cells[1].source == "# Load and analyze data"
             
             # Check CSV display cell
-            assert result_nb.cells[1].cell_type == "code"
-            assert "pandas as pd" in result_nb.cells[1].source
-            assert "pd.read_csv" in result_nb.cells[1].source
-            assert csv_path in result_nb.cells[1].source
-            assert "df.shape" in result_nb.cells[1].source
-            assert "df.head(10)" in result_nb.cells[1].source
+            assert result_nb.cells[2].cell_type == "code"
+            assert "pandas as pd" in result_nb.cells[2].source
+            assert "pd.read_csv" in result_nb.cells[2].source
+            assert csv_path in result_nb.cells[2].source
+            assert "df.shape" in result_nb.cells[2].source
+            assert "df.head(10)" in result_nb.cells[2].source
     
     def test_add_cell_with_multiple_artifacts(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -365,22 +400,27 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 4  # 1 main + 3 artifacts
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == "## Results Summary"
+            assert len(result_nb.cells) == 5  # 1 imports + 1 main + 3 artifacts
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == "## Results Summary"
             
             # Check image display cell
-            assert result_nb.cells[1].cell_type == "code"
-            assert "matplotlib" in result_nb.cells[1].source
+            assert result_nb.cells[2].cell_type == "code"
+            assert "matplotlib" in result_nb.cells[2].source
             
             # Check CSV display cell
-            assert result_nb.cells[2].cell_type == "code"
-            assert "pandas" in result_nb.cells[2].source
+            assert result_nb.cells[3].cell_type == "code"
+            assert "pandas" in result_nb.cells[3].source
             
             # Check text file cell
-            assert result_nb.cells[3].cell_type == "code"
-            assert "Display text file: notes.txt" in result_nb.cells[3].source
-            assert "Content of notes.txt" in result_nb.cells[3].source
+            assert result_nb.cells[4].cell_type == "code"
+            assert "Display text file: notes.txt" in result_nb.cells[4].source
+            assert "Content of notes.txt" in result_nb.cells[4].source
     
     def test_add_cell_with_nonexistent_artifact(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -427,10 +467,15 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            # Should only have the main cell
-            assert len(result_nb.cells) == 1
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == "# No artifacts"
+            # Should have imports + the main cell
+            assert len(result_nb.cells) == 2
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == "# No artifacts"
     
     def test_add_cell_with_various_image_extensions(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -459,10 +504,15 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 4  # 1 main + 3 images
+            assert len(result_nb.cells) == 5  # 1 imports + 1 main + 3 images
+            
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
             
             # All image cells should use matplotlib
-            for i in range(1, 4):
+            for i in range(2, 5):  # Skip imports (0) and main cell (1)
                 assert result_nb.cells[i].cell_type == "code"
                 assert "matplotlib" in result_nb.cells[i].source
                 assert "imshow" in result_nb.cells[i].source
@@ -490,15 +540,20 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 2
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == "# Text File Display Test"
+            assert len(result_nb.cells) == 3  # +1 for default imports
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == "# Text File Display Test"
             
             # Check text display cell
-            assert result_nb.cells[1].cell_type == "code"
-            assert "Display text file: sample.txt" in result_nb.cells[1].source
-            assert "Content of sample.txt" in result_nb.cells[1].source
-            assert txt_path in result_nb.cells[1].source
+            assert result_nb.cells[2].cell_type == "code"
+            assert "Display text file: sample.txt" in result_nb.cells[2].source
+            assert "Content of sample.txt" in result_nb.cells[2].source
+            assert txt_path in result_nb.cells[2].source
     
     def test_add_cell_with_unsupported_extension(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -527,19 +582,24 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 3  # 1 main + 2 unsupported files
+            assert len(result_nb.cells) == 4  # 1 imports + 1 main + 2 unsupported files
+            
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
             
             # Check warning cells
-            assert result_nb.cells[1].cell_type == "code"
-            assert "Unsupported artifact type: data.json" in result_nb.cells[1].source
-            assert "WARNING" in result_nb.cells[1].source
-            assert ".json" in result_nb.cells[1].source
-            assert "Supported extensions: .png, .jpg, .jpeg, .csv, .txt" in result_nb.cells[1].source
-            
             assert result_nb.cells[2].cell_type == "code"
-            assert "Unsupported artifact type: script.py" in result_nb.cells[2].source
+            assert "Unsupported artifact type: data.json" in result_nb.cells[2].source
             assert "WARNING" in result_nb.cells[2].source
-            assert ".py" in result_nb.cells[2].source
+            assert ".json" in result_nb.cells[2].source
+            assert "Supported extensions: .png, .jpg, .jpeg, .csv, .txt" in result_nb.cells[2].source
+            
+            assert result_nb.cells[3].cell_type == "code"
+            assert "Unsupported artifact type: script.py" in result_nb.cells[3].source
+            assert "WARNING" in result_nb.cells[3].source
+            assert ".py" in result_nb.cells[3].source
 
     def test_add_cell_with_string_artifact_path_single(self):
         """Test artifact_paths as single string path"""
@@ -565,14 +625,19 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 2
+            assert len(result_nb.cells) == 3  # +1 for default imports
+            # First cell should be the default imports
             assert result_nb.cells[0].cell_type == "code"
-            assert result_nb.cells[0].source == "# Analysis with string path"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "code"
+            assert result_nb.cells[1].source == "# Analysis with string path"
             
             # Check CSV display cell
-            assert result_nb.cells[1].cell_type == "code"
-            assert "pandas as pd" in result_nb.cells[1].source
-            assert csv_path in result_nb.cells[1].source
+            assert result_nb.cells[2].cell_type == "code"
+            assert "pandas as pd" in result_nb.cells[2].source
+            assert csv_path in result_nb.cells[2].source
 
     def test_add_cell_with_json_string_artifact_paths(self):
         """Test artifact_paths as JSON string"""
@@ -605,17 +670,22 @@ pattern = r'^[a-zA-Z0-9]+$'
             with open(notebook_path, "r", encoding="utf-8") as f:
                 result_nb = nbformat.read(f, as_version=4)
             
-            assert len(result_nb.cells) == 3  # main + csv + txt
-            assert result_nb.cells[0].cell_type == "markdown"
-            assert result_nb.cells[0].source == "# Analysis with JSON paths"
+            assert len(result_nb.cells) == 4  # imports + main + csv + txt
+            # First cell should be the default imports
+            assert result_nb.cells[0].cell_type == "code"
+            expected_imports = "import pandas as pd\nimport numpy as np\nimport math\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport sklearn\nimport os"
+            assert result_nb.cells[0].source == expected_imports
+            
+            assert result_nb.cells[1].cell_type == "markdown"
+            assert result_nb.cells[1].source == "# Analysis with JSON paths"
             
             # Check CSV display cell
-            assert result_nb.cells[1].cell_type == "code"
-            assert "pandas as pd" in result_nb.cells[1].source
+            assert result_nb.cells[2].cell_type == "code"
+            assert "pandas as pd" in result_nb.cells[2].source
             
             # Check text display cell
-            assert result_nb.cells[2].cell_type == "code"
-            assert "Display text file: notes.txt" in result_nb.cells[2].source
+            assert result_nb.cells[3].cell_type == "code"
+            assert "Display text file: notes.txt" in result_nb.cells[3].source
 
     def test_add_cell_with_invalid_json_string_artifact_paths(self):
         """Test artifact_paths as invalid JSON string (fallback to single path)"""

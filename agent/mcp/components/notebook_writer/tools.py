@@ -44,6 +44,20 @@ def add_cell_to_notebook(
         # Create a new notebook
         nb = new_notebook()
 
+        # Add default imports as the first cell for new notebooks
+        default_imports = textwrap.dedent("""
+            import pandas as pd
+            import numpy as np
+            import math
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+            import sklearn
+            import os
+        """)
+
+        import_cell = new_code_cell(default_imports)
+        nb.cells.append(import_cell)
+
     # Create and add the new cell
     if cell_type == "markdown":
         cell = new_markdown_cell(contents)
