@@ -9,7 +9,8 @@
       "mcp__analysis_executor__execute_timeseries_analysis",
       "mcp__analysis_executor__execute_soil_analysis",
       "mcp__notebook_writer__add_cell_to_notebook",
-      "Bash(uv run:*)"
+      "Bash(uv run:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

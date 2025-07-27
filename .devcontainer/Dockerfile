@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:3.0.2-22-bookworm
 
 RUN npm install -g @slidev/cli
-RUN npm install @slidev/theme-seriph
 RUN npm install -g @anthropic-ai/claude-code
 RUN npm install -g @google/gemini-cli
 

@@ -210,7 +210,9 @@ def _load_data() -> None:
         SOIL_DATA = _load_with_cache("/work/data/soil_data")
 
 
-def get_data_sample(data_type: Literal["train_timeseries", "validation_timeseries", "test_timeseries", "soil_data"]) -> str:
+def get_data_sample(
+    data_type: Literal["train_timeseries", "validation_timeseries", "test_timeseries", "soil_data"],
+) -> str:
     """
     データ種別を引数に、データのhead(5), tail(5)を結合したサンプルデータをcsv形式文字列で返す関数
 
@@ -227,7 +229,7 @@ def get_data_sample(data_type: Literal["train_timeseries", "validation_timeserie
     if not INITIALIZED:
         _load_data()
         INITIALIZED = True
-    
+
     if data_type == "train_timeseries":
         df = TRAIN
     elif data_type == "validation_timeseries":
@@ -237,18 +239,22 @@ def get_data_sample(data_type: Literal["train_timeseries", "validation_timeserie
     elif data_type == "soil_data":
         df = SOIL_DATA
     else:
-        raise ValueError(f"Invalid data type: {data_type}. Use 'train_timeseries', 'validation_timeseries', 'test_timeseries', or 'soil_data'.")
-    
+        raise ValueError(
+            f"Invalid data type: {data_type}. Use 'train_timeseries', 'validation_timeseries', 'test_timeseries', or 'soil_data'."
+        )
+
     # head(5)とtail(5)を取得
     head_df = df.head(5)
     tail_df = df.tail(5)
-    
+
     # 結合してCSV形式で返す
     combined_df = pd.concat([head_df, tail_df], ignore_index=True)
     return combined_df.to_csv(index=False)
 
 
-def get_data_summary(data_type: Literal["train_timeseries", "validation_timeseries", "test_timeseries", "soil_data"]) -> dict:
+def get_data_summary(
+    data_type: Literal["train_timeseries", "validation_timeseries", "test_timeseries", "soil_data"],
+) -> dict:
     """
     データ種別を引数に、データの行数、列数、df.describe()のcsv形式文字列をdictで返す関数
 
@@ -265,7 +271,7 @@ def get_data_summary(data_type: Literal["train_timeseries", "validation_timeseri
     if not INITIALIZED:
         _load_data()
         INITIALIZED = True
-    
+
     if data_type == "train_timeseries":
         df = TRAIN
     elif data_type == "validation_timeseries":
@@ -275,10 +281,8 @@ def get_data_summary(data_type: Literal["train_timeseries", "validation_timeseri
     elif data_type == "soil_data":
         df = SOIL_DATA
     else:
-        raise ValueError(f"Invalid data type: {data_type}. Use 'train_timeseries', 'validation_timeseries', 'test_timeseries', or 'soil_data'.")
-    
-    return {
-        "row_count": len(df),
-        "column_count": len(df.columns),
-        "describe_csv": df.describe().to_csv()
-    }
+        raise ValueError(
+            f"Invalid data type: {data_type}. Use 'train_timeseries', 'validation_timeseries', 'test_timeseries', or 'soil_data'."
+        )
+
+    return {"row_count": len(df), "column_count": len(df.columns), "describe_csv": df.describe().to_csv()}
