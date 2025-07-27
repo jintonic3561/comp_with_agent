@@ -429,3 +429,64 @@ def add_cell_to_notebook(
         elif path.endswith(".png"):
             display_image(path)
 ```
+
+
+---
+layout: section
+---
+
+# 4. デモ： エージェントによる
+# 自律的データ探索
+
+
+---
+layout: intro
+---
+
+# 動かしてみる
+
+実際にclaude codeが頑張った様子を見てみましょう
+
+
+---
+layout: section
+---
+
+# 5. まとめと展望
+
+
+---
+layout: default
+---
+
+# まとめ
+
+LLMがデータを触りながら自律的に分析を行えるようになった（？）
+
+<br>
+
+- 「データを眺めながら考える」という思考プロセスを（少しは）模倣できるようになった
+- ツール（MCPサーバ）を整備してあげれば、それなりに自律的に動いてくれる
+  - 問題設計・データ情報を確認するツール
+  - 関数を実行して出力を保存するツール  
+  - 結果を記録するツール
+- ツールを適宜修正すれば、画像・自然言語などにも応用できそう？
+- 今回はEDAしかやってないけど、実験サイクルも回せるようにしたい
+
+
+---
+layout: center
+class: text-center
+---
+
+# Enjoy Kaggle & atmaCup!
+
+<br>
+
+**X (Twitter):** [@tonic3561](https://x.com/tonic3561)
+
+**GitHub:** [https://github.com/jintonic3561](https://github.com/jintonic3561)
+
+<div class="abs-br m-6 text-sm text-gray-400">
+Thanks for listening!
+</div>
