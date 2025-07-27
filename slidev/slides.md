@@ -166,15 +166,23 @@ layout: section
 layout: two-cols-header
 ---
 
-# （人間が） 仮説・アイディアを考えるプロセス
-
-::left::
-
-## （1） EDA型
+# （人間が）仮説・アイディアを考えるプロセス
 
 <br>
 
-```mermaid
+::left::
+
+<div v-click="1">
+
+## （1） EDA型
+
+</div>
+
+<div v-click="2">
+
+<br>
+
+```mermaid {scale: 0.9}
 graph TD
     A[生データを眺める] --> B[加工・集約]
     B --> C["「妙だな…」"]
@@ -184,13 +192,21 @@ graph TD
     style A fill:#ff6b6b,stroke:#333,stroke-width:3px
 ```
 
+</div>
+
 ::right::
+
+<div v-click="1">
 
 ## （2） 仮説駆動型
 
+</div>
+
+<div v-click="3">
+
 <br>
 
-```mermaid
+```mermaid {scale: 0.95}
 graph TD
     E[仮説を立てる] --> F[分析・可視化]
     F --> G[結果を眺める]
@@ -199,7 +215,13 @@ graph TD
     style G fill:#ff6b6b,stroke:#333,stroke-width:3px
 ```
 
-→ 生データや可視化結果を**眺めながら**思考を回す
+</div>
+
+<div v-click="4">
+
+⇒ 生データや可視化結果を**眺めながら**思考を回す
+
+</div>
 
 
 ---
@@ -207,25 +229,24 @@ graph TD
 layout: default
 ---
 
-# チャットLLMとの対話における「3つの壁」
+# チャットLLMが直面するデータ分析の3つの壁
 
-<div class="grid grid-cols-3 gap-6 mt-8">
+<div class="grid grid-cols-3 gap-8 mt-8">
 
-<div>
+<div v-click="1">
 
-### （1） コンテキストの壁
+### （1）コンテキストの壁
 
 <br>
 
 - 巨大なデータはそもそも読み込んでもらえない
-
-<img src="/work/assets/huge_data.png" class="w-full mt-4" />
+- コンテキストを維持するのも大変
 
 </div>
 
-<div>
+<div v-click="2">
 
-### （2） 作業の壁
+### （2）作業の壁
 
 <br>
 
@@ -233,21 +254,33 @@ layout: default
 - 実行結果のファイル（CSVや画像）を、人間が確認  
 - その結果やファイルを、人間がLLMに再入力
 
-<img src="/work/assets/manual_work.png" class="w-full mt-4" />
-
 </div>
 
-<div>
+<div v-click="3">
 
-### （3） 思考の壁
+### （3）思考の壁
 
 <br>
 
 - 分析の「気づき」は、データを多角的に**眺める**中で生まれる
 - LLMは人間が与えた断片的な結果しか見ることができない？
 
-<img src="/work/assets/interrupted_thought.png" class="w-full mt-4" />
+</div>
 
+</div>
+
+<div class="grid grid-cols-3 gap-8 mt-8">
+
+<div v-click="1">
+<img src="/work/assets/huge_data.png" class="w-full" />
+</div>
+
+<div v-click="2">
+<img src="/work/assets/manual_work.png" class="w-full" />
+</div>
+
+<div v-click="3">
+<img src="/work/assets/interrupted_thought.png" class="w-full" />
 </div>
 
 </div>
@@ -272,20 +305,47 @@ LLMが自律的に分析を進めるために必要なタスクを分解して�
 
 <br>
 
-- 問題設計・データ構造を理解する → ✅ **できる**
-- 集約・可視化コードを書く → ✅ **できる**
-- 結果をファイル出力する → ✅ **できる**
-- ファイル （csv, png） を読み込む → ✅ **できる**
-- 読み込んだテキストや画像を解釈する → ✅ **できる**
-- 上記を繰り返す → ✅ **できる**
+<div v-click="1">
 
-<br>
+- 問題設計・データ構造を理解する <span v-click="7">→ ✅ **できる**</span>
 
-<div class="text-center text-2xl font-bold mt-8">
-⇒ 個別のタスクは実現可能。
 </div>
 
-<div class="text-center text-2xl font-bold text-red-500 mt-8">
+<div v-click="2">
+
+- 集約・可視化コードを書く <span v-click="8">→ ✅ **できる**</span>
+
+</div>
+
+<div v-click="3">
+
+- 結果をファイル出力する <span v-click="9">→ ✅ **できる**</span>
+
+</div>
+
+<div v-click="4">
+
+- ファイル （csv, png） を読み込む <span v-click="10">→ ✅ **できる**</span>
+
+</div>
+
+<div v-click="5">
+
+- 読み込んだテキストや画像を解釈する <span v-click="11">→ ✅ **できる**</span>
+
+</div>
+
+<div v-click="6">
+
+- 上記を繰り返す <span v-click="12">→ ✅ **できる**</span>
+
+</div>
+
+<div class="text-center text-2xl font-bold mt-8" v-click="13">
+⇒ 個別のタスクはすべて実現可能。
+</div>
+
+<div class="text-center text-3xl font-bold text-red-500 mt-8" v-click="14">
 あれれ～？
 </div>
 
@@ -316,11 +376,11 @@ layout: two-cols-header
 
 ## 入力データ
 
-**時系列データ （気象）：**
+**時系列データ （気象）**
 - 日々の気温、降水量、風速など
 - 時系列方法に train / valid / test を分割
 
-**静的データ （地理・土壌）：**
+**静的データ （地理・土壌）**
 - 郡ごとの標高、傾斜、土地の種類など
 - **fips** （郡ID） で時系列データに左結合
 
@@ -328,10 +388,10 @@ layout: two-cols-header
 
 ## 予測タスク
 
-**目的変数：**
-- 干ばつの深刻度を表す **0〜5** の6段階カテゴリ
+**目的変数**
+- 週間の干ばつ深刻度を表す **0〜5** の6段階カテゴリ
 
-**評価指標：**
+**評価指標**
 - **Macro F1 Score**
 - **MAE**
 
@@ -342,7 +402,7 @@ layout: two-cols-header
 layout: default
 ---
 
-# MCPサーバとは？
+# 補足…MCPサーバとは？
 
 <br>
 
