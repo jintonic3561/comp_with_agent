@@ -138,3 +138,9 @@ def get_data_description(data_type: str) -> str:
 
 この時点で、Claude CodeやGemini CLIがツールを認識してくれるはずです。
 彼らに話しかけて、実装したツールを読み込めているか確認してください。
+
+
+## ライセンス
+
+このプロジェクトは **GNU Affero General Public License v3.0 (AGPL-3.0)** のもとで公開されています。  
+AGPLの条件に従う限り、自由に利用・改変・再配布が可能です。
